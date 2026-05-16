@@ -5,10 +5,9 @@ from fastapi.templating import Jinja2Templates
 from starlette.background import BackgroundTask
 
 from sqlalchemy.orm import Session
-from sqlalchemy import desc,  or_, and_, func
+from sqlalchemy import desc, or_, and_, func
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import os
 import os
 import json
 import zipfile
@@ -19,24 +18,23 @@ import re
 import gettext
 import hmac
 import logging
+import ssl
+import secrets
+import smtplib
+from contextvars import ContextVar
+from contextlib import asynccontextmanager
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+from dotenv import load_dotenv
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from urllib.parse import urlparse
 from typing import List, Dict, Any
 from starlette.middleware.sessions import SessionMiddleware
-
-import secrets
 import requests
-import smtplib
-from contextvars import ContextVar
 
 _csp_nonce_ctx: ContextVar[str] = ContextVar('csp_nonce', default='')
-import ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.utils import formataddr
-
-from dotenv import load_dotenv
 
 script_dir = Path(__file__).resolve().parent
 main_dir = script_dir.parent
@@ -45,13 +43,12 @@ load_dotenv(dotenv_path=dotenv_path)
 
 logger = logging.getLogger(__name__)
 
-from .database import get_db, engine, Base, User, Manga, Chapter, Setting, Partner, UserPreference, ChapterVisit, EmailVerification
-from .auth import (
-    get_current_user, get_current_user_optional, require_admin, create_access_token, 
+from .database import get_db, engine, Base, User, Manga, Chapter, Setting, Partner, UserPreference, ChapterVisit, EmailVerification  # noqa: E402
+from .auth import (  # noqa: E402
+    get_current_user, get_current_user_optional, require_admin, create_access_token,
     get_password_hash, pwd_context
 )
-from .middleware.security import SecurityHeadersMiddleware
-from contextlib import asynccontextmanager
+from .middleware.security import SecurityHeadersMiddleware  # noqa: E402
 
 _DEFAULT_SETTINGS = [
     ("site_name", "Lyra Reader"),
@@ -508,7 +505,7 @@ async def redirect_partner(request: Request, partner_id: int, db: Session = Depe
 async def profile_page(request: Request, db: Session = Depends(get_db), user: str|int = None):
     current_user = get_current_user(request, db)
     settings = get_settings(db)
-    if user != None:
+    if user is not None:
         if user.isdigit():
             profile_user = db.query(User).filter(User.id == user).first()
             print(profile_user)
@@ -548,8 +545,8 @@ async def profile_page(request: Request, db: Session = Depends(get_db), user: st
 
 @app.get("/api/profile/stats/{userid}")
 async def get_profile_stats(request: Request, userid: int, db: Session = Depends(get_db)):
-    current_user = get_current_user(request, db)
-    
+    get_current_user(request, db)
+
     total_visits = db.query(func.count(ChapterVisit.id)).filter(ChapterVisit.user_id == userid).scalar() or 0
     
     unique_chapters = db.query(func.count(func.distinct(ChapterVisit.chapter_id))).filter(
@@ -663,12 +660,12 @@ async def verify_email_change(request: Request, token: str, db: Session = Depend
     verification = db.query(EmailVerification).filter(
         EmailVerification.verification_token == token,
         EmailVerification.expires_at > datetime.now(),
-        EmailVerification.verified == False
+        EmailVerification.verified.is_(False)
     ).first()
-    
+
     if not verification:
         raise HTTPException(status_code=400, detail="Invalid or expired verification token")
-    
+
     user = db.query(User).filter(User.id == verification.user_id).first()
     user.email = verification.email
     verification.verified = True
@@ -845,12 +842,12 @@ async def verify_email(request: Request, token: str, db: Session = Depends(get_d
     verification = db.query(EmailVerification).filter(
         EmailVerification.verification_token == token,
         EmailVerification.expires_at > datetime.now(),
-        EmailVerification.verified == False
+        EmailVerification.verified.is_(False)
     ).first()
-    
+
     if not verification:
         raise HTTPException(status_code=400, detail="Invalid or expired verification token")
-    
+
     user = db.query(User).filter(User.id == verification.user_id).first()
     user.email_verified = True
     user.is_active = True
@@ -867,8 +864,8 @@ async def create_user_api(
     user_data: Dict[str, Any],
     db: Session = Depends(get_db)
 ):
-    current_user = require_admin(request, db)
-    
+    require_admin(request, db)
+
     if db.query(User).filter(or_(User.username == user_data['username'], User.email == user_data['email'])).first():
         raise HTTPException(status_code=400, detail="User already exists")
     
@@ -886,7 +883,7 @@ async def create_user_api(
 
 @app.get("/api/users/{user_id}")
 async def get_user_api(request: Request, user_id: int, db: Session = Depends(get_db)):
-    current_user = require_admin(request, db)
+    require_admin(request, db)
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -906,11 +903,11 @@ async def update_user_api(
     user_data: Dict[str, Any],
     db: Session = Depends(get_db)
 ):
-    current_user = require_admin(request, db)
+    require_admin(request, db)
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     user.username = user_data.get('username', user.username)
     user.email = user_data.get('email', user.email)
     user.rights = user_data.get('rights', user.rights)
@@ -941,8 +938,8 @@ async def create_partner_api(
     partner_data: Dict[str, Any],
     db: Session = Depends(get_db)
 ):
-    current_user = require_admin(request, db)
-    
+    require_admin(request, db)
+
     new_partner = Partner(
         name=partner_data['name'],
         url=partner_data.get('url', '')
@@ -968,7 +965,7 @@ async def get_partners_api(request: Request, db: Session = Depends(get_db)):
 
 @app.delete("/api/partners/{partner_id}")
 async def delete_partner_api(request: Request, partner_id: int, db: Session = Depends(get_db)):
-    current_user = require_admin(request, db)
+    require_admin(request, db)
     partner = db.query(Partner).filter(Partner.id == partner_id).first()
     if not partner:
         raise HTTPException(status_code=404, detail="Partner not found")
@@ -983,8 +980,8 @@ async def update_settings_api(
     settings_data: Dict[str, str],
     db: Session = Depends(get_db)
 ):
-    current_user = require_admin(request, db)
-    
+    require_admin(request, db)
+
     for key, value in settings_data.items():
         setting = db.query(Setting).filter(Setting.setting_key == key).first()
         if setting:
@@ -998,7 +995,7 @@ async def update_settings_api(
 
 @app.delete("/api/settings/{setting_key}")
 async def delete_setting_api(request: Request, setting_key: str, db: Session = Depends(get_db)):
-    current_user = require_admin(request, db)
+    require_admin(request, db)
     setting = db.query(Setting).filter(Setting.setting_key == setting_key).first()
     if not setting:
         raise HTTPException(status_code=404, detail="Setting not found")
@@ -1021,7 +1018,7 @@ async def create_manga(
     cover: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
-    current_user = get_current_user(request, db)
+    get_current_user(request, db)
     if user_has_rights(request, db, "Manga Manage") is False:
         return {"message": "Error: Manga Manage right required"}
     
@@ -1079,11 +1076,11 @@ async def update_manga_api(
     cover: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
-    current_user = require_admin(request, db)
+    require_admin(request, db)
     manga = db.query(Manga).filter(Manga.id == manga_id).first()
     if not manga:
         raise HTTPException(status_code=404, detail="Manga not found")
-    
+
     manga.name = name
     manga.url_slug = url_slug
     manga.description = description
@@ -1104,7 +1101,7 @@ async def update_manga_api(
 
 @app.delete("/api/manga/{manga_id}")
 async def delete_manga_api(request: Request, manga_id: int, db: Session = Depends(get_db)):
-    current_user = require_admin(request, db)
+    require_admin(request, db)
     manga = db.query(Manga).filter(Manga.id == manga_id).first()
     if not manga:
         raise HTTPException(status_code=404, detail="Manga not found")
@@ -1208,7 +1205,7 @@ async def create_chapter(
             try:
                 db.delete(new_chapter)
                 db.commit()
-            except:
+            except Exception:
                 db.rollback()
         
         print(f"Chapter creation error: {e}")
@@ -1217,7 +1214,7 @@ async def create_chapter(
 
 @app.delete("/api/chapter/{chapter_id}")
 async def delete_chapter_api(request: Request, chapter_id: int, db: Session = Depends(get_db)):
-    current_user = require_admin(request, db)
+    require_admin(request, db)
     chapter = db.query(Chapter).filter(Chapter.id == chapter_id).first()
     if not chapter:
         raise HTTPException(status_code=404, detail="Chapter not found")
@@ -1334,7 +1331,7 @@ async def latest_releases(
     token: str = "",
     release_type: str = "regular"
 ):
-    if token == "" or check_api_token(db, token) == False:
+    if token == "" or not check_api_token(db, token):
         raise HTTPException(status_code=403, detail="API-Token is not correct.")
     
     if release_type == "regular":
@@ -1367,7 +1364,7 @@ def policy(request: Request, db: Session = Depends(get_db)):
     })
 
 @app.get("/imprint")
-def policy(request: Request, db: Session = Depends(get_db)):
+def imprint(request: Request, db: Session = Depends(get_db)):
     current_user = get_current_user_optional(request, db)
     settings = get_settings(db)
 
@@ -1537,7 +1534,7 @@ def verify_recaptcha(token: str) -> bool:
         response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
         result = response.json()
         return result.get('success', False)
-    except:
+    except Exception:
         return False
 
 def get_setting_value(db: Session, key: str, default: str = ""):
