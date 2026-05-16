@@ -16,7 +16,7 @@ services:
       retries: 10
 
   app:
-    image: ghcr.io/Shirobaka/Lyra-Reader:latest
+    image: ghcr.io/shirobaka/lyra-reader:latest
     restart: unless-stopped
     ports:
       - "8000:8000"
