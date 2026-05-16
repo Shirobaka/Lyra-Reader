@@ -285,11 +285,11 @@ Use the **Test Email** button in Admin → Settings to verify your configuration
 
 ```bash
 # Build
-docker build -t ghcr.io/Shirobaka/Lyra-Reader:latest .
+docker build -t ghcr.io/shirobaka/lyra-reader:latest .
 
 # Push to GitHub Container Registry
 docker login ghcr.io
-docker push ghcr.io/Shirobaka/Lyra-Reader:latest
+docker push ghcr.io/shirobaka/lyra-reader:latest
 ```
 
 Then update the `image:` line in `docker-compose.yml` with your image name.
