@@ -1,0 +1,13 @@
+{{ _f('Email Change Verification - {site_name}', site_name=site_name) }}
+
+{{ _f('You\'ve requested to change your email address on {site_name}.', site_name=site_name) }}
+
+{{ _('To confirm this change, please visit:') }}
+{{ verification_url }}
+
+{{ _('This link will expire in 24 hours.') }}
+
+{{ _('If you did not request this change, please ignore this email.') }}
+
+---
+{{ site_name }} {{ _('Team') }}

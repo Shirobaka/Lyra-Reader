@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" data-theme='{% if(current_user and current_user.preferences.theme) %}{{ current_user.preferences.theme }}{% else %}{{ settings.get("default_theme","dark") }}{%endif%}'>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}{{ settings.get('site_name') or "Manga Scanlations" }}{% endblock %}</title>
+	<link rel="icon" type="image/x-icon" href="{{ settings.get('favicon_url') or '/static/images/favicon.ico' }}">
+
+	<style>
+		:root {
+			--theme-color: {{ (current_user and current_user.preferences.accent_color) or settings.get("accent_color") or "#ff6b6b" }};
+		}
+	</style>
+	
+	<link rel="stylesheet" href="/static/css/style.css">
+	{% block head %}{% endblock %}
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<nav class="nav">
+				<a href="/" class="logo">{{ settings.get('site_name') or "Manga Scanlations" }}</a>
+				
+				<button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+					<span id="nav-toggle-icon">☰</span>
+				</button>
+				
+				<ul class="nav-links" id="nav-links">
+					<li><a href="/">{{ _('Home') }}</a></li>
+					<li><a href="/projects">{{ _('Projects') }}</a></li>
+					{% if current_user %}
+					<li><a href="/profile">{{ _('Profile') }}</a></li>
+					{% endif %}
+					{% if current_user and ("Admin" in current_user.rights or "Manga Manage" in current_user.rights or "Chapter Upload" in current_user.rights or "Manage Users" in current_user.rights) %}
+					<li><a href="/admin" data-auth-required>{{ _('Admin') }}</a></li>
+					{% endif %}
+					
+					<li class="mobile-auth">
+						{% if not current_user %}
+						<div data-guest-only>
+							<a href="/login" class="btn btn-secondary" style="margin-bottom: 0.5rem; display: block;">{{ _('Login') }}</a>
+							{% if settings.get('allow_registration') != "false" %}
+								<a href="/register" class="btn" style="display: block;">{{ _('Register') }}</a>
+							{% endif %}
+						</div>
+						{% else %}
+						<div data-auth-required>
+							<span style="color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">{{ _('Welcome') }}, {{ current_user.username }}!</span>
+							<button id="mobile-logout-btn" class="btn btn-secondary" style="display: block;">{{ _('Logout') }}</button>
+						</div>
+						{% endif %}
+					</li>
+				</ul>
+				
+				<div class="nav-actions">
+					{% if not current_user %}
+					<div data-guest-only class="desktop-auth">
+						<a href="/login" class="btn btn-secondary">{{ _('Login') }}</a>
+						{% if settings.get('allow_registration') != "false" %}
+							<a href="/register" class="btn">{{ _('Register') }}</a>
+						{% endif %}
+					</div>
+					{% else %}
+					<div data-auth-required class="desktop-auth">
+						<span style="margin-right: 1rem; color: var(--text-secondary); display: none;">{{ _('Welcome, %(username)s!') % {"username": current_user.username} }}</span>
+						<button id="desktop-logout-btn" class="btn btn-secondary">{{ _('Logout') }}</button>
+					</div>
+					{% endif %}
+				</div>
+			</nav>
+		</div>
+		
+		<div class="nav-overlay" id="nav-overlay"></div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			{% block content %}{% endblock %}
+		</div>
+	</main>
+
+	<footer class="site-footer" role="contentinfo">
+		<div class="footer-grid">
+			<section class="partners">
+				<h2>{{ _('Partners') }}</h2>
+				<div class="partner-list" id="partner-list">
+				</div>
+			</section>
+
+			<aside class="legal">
+				<h2>{{ _('Links') }}</h2>
+				<nav>
+					<!--<a href="/imprint">{{ _('Imprint') }}</a>
+					<a href="/privacy-policy">{{ _('Privacy Policy') }}</a>-->
+				</nav>
+			</aside>
+
+			<aside>
+				<div>© <span id="year"></span> {{ settings.get('site_name') }}. All rights reserved.</div>
+				<div class="social-links">
+					<a href="https://github.com/Shirobaka/Lrya-Reader" target="_blank" aria-label="GitHub">
+						<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>github [#AAAAAAAAAAA]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -7559.000000)" fill="#AAAAAA"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399" id="github-[#AAAAAAAAAAA]"> </path> </g> </g> </g> </g></svg>
+					</a>
+					{% if settings.get('discord_url') != '' %}
+						<a href="{{ settings.get('discord_url') }}" target="_blank" aria-label="Discord">
+							<svg width="20px" height="20px" viewBox="0 -28.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M216.856339,16.5966031 C200.285002,8.84328665 182.566144,3.2084988 164.041564,0 C161.766523,4.11318106 159.108624,9.64549908 157.276099,14.0464379 C137.583995,11.0849896 118.072967,11.0849896 98.7430163,14.0464379 C96.9108417,9.64549908 94.1925838,4.11318106 91.8971895,0 C73.3526068,3.2084988 55.6133949,8.86399117 39.0420583,16.6376612 C5.61752293,67.146514 -3.4433191,116.400813 1.08711069,164.955721 C23.2560196,181.510915 44.7403634,191.567697 65.8621325,198.148576 C71.0772151,190.971126 75.7283628,183.341335 79.7352139,175.300261 C72.104019,172.400575 64.7949724,168.822202 57.8887866,164.667963 C59.7209612,163.310589 61.5131304,161.891452 63.2445898,160.431257 C105.36741,180.133187 151.134928,180.133187 192.754523,160.431257 C194.506336,161.891452 196.298154,163.310589 198.110326,164.667963 C191.183787,168.842556 183.854737,172.420929 176.223542,175.320965 C180.230393,183.341335 184.861538,190.991831 190.096624,198.16893 C211.238746,191.588051 232.743023,181.531619 254.911949,164.955721 C260.227747,108.668201 245.831087,59.8662432 216.856339,16.5966031 Z M85.4738752,135.09489 C72.8290281,135.09489 62.4592217,123.290155 62.4592217,108.914901 C62.4592217,94.5396472 72.607595,82.7145587 85.4738752,82.7145587 C98.3405064,82.7145587 108.709962,94.5189427 108.488529,108.914901 C108.508531,123.290155 98.3405064,135.09489 85.4738752,135.09489 Z M170.525237,135.09489 C157.88039,135.09489 147.510584,123.290155 147.510584,108.914901 C147.510584,94.5396472 157.658606,82.7145587 170.525237,82.7145587 C183.391518,82.7145587 193.761324,94.5189427 193.539891,108.914901 C193.539891,123.290155 183.391518,135.09489 170.525237,135.09489 Z" fill="#AAAAAA" fill-rule="nonzero"> </path> </g> </g></svg>
+						</a>
+					{% endif %}
+				</div>
+			</aside>
+		</div>
+	</footer>
+
+
+	{% block scripts %}{% endblock %}
+
+	<script nonce="{{ csp_nonce() }}">
+	const navToggle = document.getElementById('nav-toggle');
+	const navLinks = document.getElementById('nav-links');
+	const navOverlay = document.getElementById('nav-overlay');
+	const navToggleIcon = document.getElementById('nav-toggle-icon');
+
+	function toggleNavMenu() {
+		const isActive = navLinks.classList.contains('active');
+		
+		if (isActive) {
+			closeNavMenu();
+		} else {
+			openNavMenu();
+		}
+	}
+
+	function openNavMenu() {
+		navLinks.classList.add('active');
+		navOverlay.classList.add('active');
+		navToggleIcon.textContent = '✕';
+		document.body.style.overflow = 'hidden';
+	}
+
+	function closeNavMenu() {
+		navLinks.classList.remove('active');
+		navOverlay.classList.remove('active');
+		navToggleIcon.textContent = '☰';
+		document.body.style.overflow = '';
+	}
+
+	navToggle.addEventListener('click', toggleNavMenu);
+	navLinks.addEventListener('click', (e) => { if (e.target.closest('a')) closeNavMenu(); });
+	navOverlay.addEventListener('click', closeNavMenu);
+	const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+	const desktopLogoutBtn = document.getElementById('desktop-logout-btn');
+	if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', () => { logout(); closeNavMenu(); });
+	if (desktopLogoutBtn) desktopLogoutBtn.addEventListener('click', logout);
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+			closeNavMenu();
+		}
+	});
+
+	window.addEventListener('resize', () => {
+		if (window.innerWidth >= 768) {
+			closeNavMenu();
+		}
+	});
+
+	const html = document.documentElement;
+
+	function setTheme(theme) {
+		html.setAttribute('data-theme', theme);
+	}
+
+	const savedTheme = '{% if(current_user and current_user.preferences.theme) %}{{ current_user.preferences.theme }}{% else %}{{ settings.get("default_theme", "dark") }}{% endif %}';
+	setTheme(savedTheme);
+
+	async function logout() {
+		try {
+			const response = await fetch('/api/logout', {
+				method: 'POST',
+				credentials: 'include'
+			});
+			
+			if (response.ok) {
+				showNotification('Logged out successfully!');
+				setTimeout(() => {
+					window.location.href = '/';
+				}, 1000);
+			} else {
+				throw new Error('Logout failed');
+			}
+		} catch (error) {
+			showNotification('Logout failed', 'error');
+		}
+	}
+
+	async function downloadChapter(chapterId) {
+		try {
+			showNotification('{{ _("Download starting...") }}')
+			const response = await fetch(`/api/download/${chapterId}`, {
+				credentials: 'include'
+			});
+			
+			if (!response.ok) {
+				if (response.status === 401) {
+					showNotification('{{ _("Please login to download chapters") }}', 'error');
+					return;
+				}
+				if (response.status === 403) {
+					showNotification('{{ _("Access denied. Patreon subscription required.") }}', 'error');
+					return;
+				}
+				throw new Error('Download failed');
+			}
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			const disposition = response.headers.get("content-disposition");
+			let filename = "chapter.zip";
+			if (disposition) {
+				const rfc5987Match = disposition.match(/filename\*=(?:UTF-8|utf-8)'[^']*'([^;\n]+)/);
+				if (rfc5987Match) {
+					filename = decodeURIComponent(rfc5987Match[1]);
+				} else {
+					const standardMatch = disposition.match(/filename="?([^";\n]+)"?/);
+					if (standardMatch) filename = standardMatch[1];
+				}
+			}
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			window.URL.revokeObjectURL(url);
+			document.body.removeChild(a);
+			
+			showNotification('{{ _("Download started!") }}');
+		} catch (error) {
+			showNotification(error.message, 'error');
+		}
+	}
+
+	async function checkAndRefreshToken() {
+		try {
+			const response = await fetch('/api/refresh-token', {
+				method: 'POST',
+				credentials: 'include'
+			});
+			
+			if (response.ok) {
+				const result = await response.json();
+				console.log('Token check:', result.message);
+			}
+		} catch (error) {
+			console.log('Token refresh check failed:', error);
+		}
+	}
+
+	//setInterval(checkAndRefreshToken, 60 * 60 * 1000);
+
+	const d = new Date();
+	const y = d.getFullYear();
+	document.getElementById('year').innerHTML = y;
+
+	document.addEventListener('DOMContentLoaded', () => {
+		setTimeout(checkAndRefreshToken, 5000);
+		
+		updateAuthDisplay();
+
+		async function loadPartners() {
+			try {
+				const response = await fetch("/api/partners");
+				if (!response.ok) throw new Error("Network response was not ok");
+
+				const partners = await response.json();
+				const container = document.getElementById("partner-list");
+
+				partners.forEach(partner => {
+					const a = document.createElement("a");
+					a.href = "/partner/" + partner.id;
+					a.textContent = partner.name;
+					container.appendChild(a);
+				});
+			} catch (error) {
+				console.error("Failed to load partners:", error);
+			}
+		}
+
+		loadPartners();
+	});
+
+	function updateAuthDisplay() {
+		const desktopAuth = document.querySelectorAll('.desktop-auth');
+		const mobileAuth = document.querySelectorAll('.mobile-auth');
+		
+		if (window.innerWidth >= 768) {
+			desktopAuth.forEach(el => el.style.display = 'flex');
+			mobileAuth.forEach(el => el.style.display = 'none');
+		} else {
+			desktopAuth.forEach(el => el.style.display = 'none');
+			mobileAuth.forEach(el => el.style.display = 'block');
+		}
+	}
+
+	window.addEventListener('resize', updateAuthDisplay);
+
+	let lastNotificationTime = 0;
+	const NOTIFICATION_THROTTLE = 1000;
+	let notificationContainer;
+
+	function initNotificationSystem() {
+		if (!notificationContainer) {
+			notificationContainer = document.createElement('div');
+			notificationContainer.className = 'notification-container';
+			document.body.appendChild(notificationContainer);
+		}
+	}
+
+	function showNotification(message, type = 'success', duration = 4000) {
+		const now = Date.now();
+		if (now - lastNotificationTime < NOTIFICATION_THROTTLE) {
+			console.log('Notification throttled:', message);
+			return;
+		}
+		lastNotificationTime = now;
+		
+		initNotificationSystem();
+		
+		const notification = document.createElement('div');
+		notification.className = `notification ${type}`;
+		notification.innerHTML = message;
+		const closeBtn = document.createElement('button');
+		closeBtn.className = 'notification-close';
+		closeBtn.innerHTML = '&times;';
+		closeBtn.addEventListener('click', () => notification.remove());
+		notification.appendChild(closeBtn);
+		
+		notificationContainer.appendChild(notification);
+		
+		setTimeout(() => notification.classList.add('show'), 10);
+		
+		setTimeout(() => {
+			notification.classList.add('hide');
+			setTimeout(() => {
+				if (notification.parentElement) {
+					notification.remove();
+				}
+			}, 300);
+		}, duration);
+		
+		console.log(`[${type.toUpperCase()}] ${message}`);
+	}
+
+	const notify = "{{ notification or None }}"
+	if(notify !== 'None')
+	{
+		showNotification(notify, 'error', 5000);
+	}
+
+	document.addEventListener('DOMContentLoaded', initNotificationSystem);
+	</script>
+
+	<style>
+	.mobile-auth {
+		display: none;
+		padding-top: var(--spacing-lg);
+		border-top: 1px solid var(--border-color);
+		margin-top: var(--spacing-lg);
+	}
+
+	.desktop-auth {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+	}
+
+	@media (max-width: 767px) {
+		.mobile-auth {
+			display: block;
+		}
+		
+		.desktop-auth {
+			display: none;
+		}
+		
+		.nav-actions {
+			gap: var(--spacing-xs);
+		}
+		
+		.nav-actions .btn {
+			padding: var(--spacing-xs) var(--spacing-sm);
+			font-size: var(--font-sm);
+		}
+	}
+
+	@media (min-width: 768px) {
+		.desktop-auth span {
+			display: inline !important;
+		}
+	}
+	</style>
+</body>
+</html>

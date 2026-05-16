@@ -1,0 +1,11 @@
+{{ _f('Welcome to {site_name}!', site_name=site_name) }}
+
+{{ _('To complete your registration, please verify your email address by visiting this link:') }}
+{{ verification_url }}
+
+{{ _('This verification link will expire in 24 hours.') }}
+
+{{ _f('If you did not create an account with {site_name}, you can safely ignore this email.', site_name=site_name) }}
+
+---
+{{ site_name }} {{ _('Team') }}

@@ -1,0 +1,835 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }} - {{ settings.get('site_name', 'Manga Site') }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="main">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <div class="avatar-circle">
+                    <span class="avatar-initial">{{ user.username[0].upper() }}</span>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name">{{ user.username }}</h1>
+                    {% if "User Manage" in current_user.rights or "Admin" in current_user.rights or current_user.id == user.id %}
+                        <p class="profile-email">{{ user.email }}</p>
+                    {% endif %}
+                    {% if "User Manage" in current_user.rights or "Admin" in current_user.rights or current_user.id == user.id %}
+                        <div class="profile-badges">
+                            {% if user.rights %}
+                                {% for right in user.rights %}
+                                    <span class="badge badge-{{ right.lower().replace(' ', '-') }}">{{ right }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="badge badge-user">{{ _("Standard User") }}</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="profile-stats-quick">
+                <div class="quick-stat">
+                    <div class="stat-number" id="member-days">-</div>
+                    <div class="stat-label">{{ _("Days") }}</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="stat-number">{{ visit_count }}</div>
+                    <div class="stat-label">{{ _("Chapters") }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="total-visits">{{ visit_count }}</div>
+                        <div class="stat-title">{{ _("Total Chapters Read") }}</div>
+                        <div class="stat-change" id="reading-streak">{{ _("Keep reading!") }}</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-success">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="unique-chapters">-</div>
+                        <div class="stat-title">{{ _("Unique Chapters") }}</div>
+                        <div class="stat-change">{{ _("Discovering new content") }}</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon">📖</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="unique-manga">-</div>
+                        <div class="stat-title">{{ _("Manga Series") }}</div>
+                        <div class="stat-change">{{ _("Exploring different stories") }}</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-info">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="reading-level">{{ _("Reader") }}</div>
+                        <div class="stat-title">{{ _("Reading Level") }}</div>
+                        <div class="stat-change" id="level-progress">{{ _("Keep going!") }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="most-read-section" style="display: none;">
+            <div class="card-header">
+                <h2>🏆 {{ _("Your Top Manga") }}</h2>
+                <p class="card-subtitle">{{ _("The series you read most often") }}</p>
+            </div>
+            <div class="most-read-grid" id="most-read-list">
+            </div>
+        </div>
+        <div class="settings-container">
+            {% if current_user.id == user.id %}
+            <div class="card settings-card">
+                <div class="card-header">
+                    <h2>🎨 {{ _("Appearance & Theme") }}</h2>
+                    <p class="card-subtitle">{{ _("Customize how the site looks for you") }}</p>
+                </div>
+                <form id="appearance-form" class="settings-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">{{ _("Accent Color") }}</label>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="accent-color" name="accent_color" value="{{ user.preferences.accent_color }}" class="color-picker">
+                                <div class="color-preview" style="background-color: {{ user.preferences.accent_color }}"></div>
+                                <span class="color-value">{{ user.preferences.accent_color }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">{{ _("Theme Mode") }}</label>
+                            <select name="theme" class="form-input theme-select">
+                                <option value="auto" {% if user.preferences.theme == 'auto' %}selected{% endif %}>🔄 {{ _("Auto (System)") }}</option>
+                                <option value="light" {% if user.preferences.theme == 'light' %}selected{% endif %}>☀️ {{ _("Light Mode") }}</option>
+                                <option value="dark" {% if user.preferences.theme == 'dark' %}selected{% endif %}>🌙 {{ _("Dark Mode") }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-icon">💾</span>
+                            {{ _("Save Appearance") }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card settings-card">
+                <div class="card-header">
+                    <h2>🔒 {{ _("Security Settings") }}</h2>
+                    <p class="card-subtitle">{{ _("Manage your account security") }}</p>
+                </div>
+                
+                <div class="security-section">
+                    <h3 class="section-title">{{ _("Change Password") }}</h3>
+                    <form id="password-form" class="settings-form">
+                        <div class="form-group">
+                            <label class="form-label">{{ _("Current Password") }}</label>
+                            <input type="password" name="current_password" class="form-input" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">{{ _("New Password") }}</label>
+                                <input type="password" name="new_password" class="form-input" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{{ _("Confirm Password") }}</label>
+                                <input type="password" name="confirm_password" class="form-input" required minlength="6">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-icon">🔑</span>
+                                {{ _("Update Password") }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="security-section">
+                    <h3 class="section-title">{{ _("Change Email Address") }}</h3>
+                    <form id="email-form" class="settings-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">{{ _("New Email Address") }}</label>
+                                <input type="email" name="new_email" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">{{ _("Confirm with Password") }}</label>
+                                <input type="password" name="password" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-icon">📧</span>
+                                {{ _("Send Verification") }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card settings-card">
+                <div class="card-header">
+                    <h2>ℹ️ {{ _("Account Information") }}</h2>
+                    <p class="card-subtitle">{{ _("Your account details and membership info") }}</p>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">👤</div>
+                        <div class="info-content">
+                            <div class="info-label">{{ _("Username") }}</div>
+                            <div class="info-value">{{ user.username }}</div>
+                        </div>
+                    </div>                    
+                    {% if "User Manage" in current_user.rights or "Admin" in current_user.rights or current_user.id == user.id %}
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <div class="info-label">{{ _("Email") }}</div>
+                            <div class="info-value">{{ user.email }}</div>
+                            {% if user.email_verified %}
+                                <div class="verification-badge verified">✅ {{ _("Verified") }}</div>
+                            {% else %}
+                                <div class="verification-badge unverified">⚠️ {{ _("Not Verified") }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="info-item">
+                        <div class="info-icon">📅</div>
+                        <div class="info-content">
+                            <div class="info-label">{{ _("Member Since") }}</div>
+                            <div class="info-value">{{ user.created_at.strftime('%B %d, %Y') }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🏷️</div>
+                        <div class="info-content">
+                            <div class="info-label">{{ _("Account Type") }}</div>
+                            <div class="info-value">
+                                {% if 'Admin' in user.rights %}
+                                    <span class="account-type admin">👑 {{ _("Administrator") }}</span>
+                                {% elif 'Team Member' in user.rights %}
+                                    <span class="account-type admin">👑 {{ _("Team Member") }}</span>
+                                {% elif 'Patreon' in user.rights %}
+                                    <span class="account-type patreon">⭐ {{ _("Patreon Supporter") }}</span>
+                                {% else %}
+                                    <span class="account-type standard">🌟 {{ _("Standard Member") }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Profile-specific styles */
+.profile-header {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 15px;
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.profile-avatar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-2xl);
+    font-weight: bold;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.profile-name {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-2xl);
+    font-weight: 700;
+}
+
+.profile-email {
+    margin: 0 0 var(--spacing-sm) 0;
+    opacity: 0.9;
+    font-size: var(--font-base);
+}
+
+.profile-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 20px;
+    font-size: var(--font-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-admin { background: #ff6b6b; color: white; }
+.badge-patreon { background: #ffd93d; color: #333; }
+.badge-user { background: rgba(255, 255, 255, 0.2); color: white; }
+
+.profile-stats-quick {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xl);
+}
+
+.quick-stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: var(--font-2xl);
+    font-weight: bold;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: var(--font-sm);
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Statistics Dashboard */
+.stats-dashboard {
+    margin-bottom: var(--spacing-xl);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    border-radius: 15px;
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 4px solid var(--accent-primary);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card.stat-primary { border-left-color: var(--accent-primary); }
+.stat-card.stat-success { border-left-color: var(--success); }
+.stat-card.stat-warning { border-left-color: var(--warning); }
+.stat-card.stat-info { border-left-color: #3b82f6; }
+
+.stat-icon {
+    font-size: var(--font-3xl);
+    opacity: 0.8;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: var(--font-2xl);
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-title {
+    font-size: var(--font-base);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-change {
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+}
+
+/* Card Header */
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.card-header h2 {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.card-subtitle {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+}
+
+/* Most Read Section */
+.most-read-grid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.most-read-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.most-read-item:hover {
+    background: var(--border-color);
+    transform: translateX(5px);
+}
+
+.manga-rank {
+    background: var(--accent-primary);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: var(--font-sm);
+}
+
+.manga-name {
+    flex: 1;
+    margin-left: var(--spacing-md);
+    font-weight: 500;
+}
+
+.manga-reads {
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+}
+
+/* Settings Container */
+.settings-container {
+    display: grid;
+    gap: var(--spacing-xl);
+}
+
+.settings-card {
+    overflow: hidden;
+}
+
+.settings-form {
+    margin: 0;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+.section-title {
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+    font-size: var(--font-lg);
+}
+
+.security-section:not(:last-child) {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Color Picker */
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.color-picker {
+    width: 60px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.color-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+}
+
+.color-value {
+    font-family: monospace;
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-icon {
+    margin-right: var(--spacing-xs);
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+}
+
+.info-icon {
+    font-size: var(--font-xl);
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-label {
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.info-value {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.verification-badge {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.verification-badge.verified {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+}
+
+.verification-badge.unverified {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+}
+
+.account-type {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 15px;
+    font-size: var(--font-sm);
+    font-weight: 600;
+}
+
+.account-type.admin {
+    background: rgba(255, 107, 107, 0.2);
+    color: var(--error);
+}
+
+.account-type.patreon {
+    background: rgba(255, 217, 61, 0.2);
+    color: var(--warning);
+}
+
+.account-type.standard {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+/* Responsive Design */
+@media all and (max-width: 1023px) {
+    .profile-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .settings-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .settings-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+</style>
+
+<script nonce="{{ csp_nonce() }}">
+const memberSince = new Date('{{ user.created_at.isoformat() }}');
+const today = new Date();
+const daysDiff = Math.floor((today - memberSince) / (1000 * 60 * 60 * 24));
+document.getElementById('member-days').textContent = daysDiff;
+
+async function loadStats() {
+    try {
+        const response = await fetch('/api/profile/stats/{{ user.id }}');
+        const stats = await response.json();
+        
+        document.getElementById('unique-chapters').textContent = stats.unique_chapters;
+        document.getElementById('unique-manga').textContent = stats.unique_manga;
+        
+        const totalReads = stats.total_visits || 0;
+        let level = "Beginner";
+        if (totalReads >= 100) level = "Expert";
+        else if (totalReads >= 50) level = "Advanced";
+        else if (totalReads >= 20) level = "Intermediate";
+        
+        document.getElementById('reading-level').textContent = level;
+        
+        if (stats.most_read && stats.most_read.length > 0) {
+            const mostReadSection = document.getElementById('most-read-section');
+            const mostReadList = document.getElementById('most-read-list');
+            
+            mostReadList.innerHTML = stats.most_read.map((manga, index) => `
+                <div class="most-read-item">
+                    <div class="manga-rank">${index + 1}</div>
+                    <div class="manga-name"><a style="color: inherit; text-decoration: inherit;" href="/project/${manga.url_slug}">${manga.name}</a></div>
+                    <div class="manga-reads">${manga.visits} chapters</div>
+                </div>
+            `).join('');
+            
+            mostReadSection.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Failed to load stats:', error);
+    }
+}
+
+const colorPicker = document.getElementById('accent-color');
+const colorPreview = document.querySelector('.color-preview');
+const colorValue = document.querySelector('.color-value');
+
+if(colorPicker)
+{
+    colorPicker.addEventListener('input', function() {
+        const color = this.value;
+        colorPreview.style.backgroundColor = color;
+        colorValue.textContent = color;
+        
+        document.documentElement.style.setProperty('--theme-color', color);
+    });
+}
+
+const appearanceForm = document.getElementById('appearance-form');
+
+if(appearanceForm)
+{
+    appearanceForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<span class="loading"></span> Saving...';
+        submitBtn.disabled = true;
+        
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch('/api/profile/preferences', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                submitBtn.innerHTML = '<span class="btn-icon">✅</span> Saved!';
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            } else {
+                throw new Error('Failed to update');
+            }
+        } catch (error) {
+            submitBtn.innerHTML = '<span class="btn-icon">❌</span> Error';
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        }
+    });
+}
+
+const passwordForm = document.getElementById('password-form');
+
+if(passwordForm)
+{
+    passwordForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        const formData = new FormData(this);
+        
+        if (formData.get('new_password') !== formData.get('confirm_password')) {
+            alert('{{ _("New passwords do not match") }}');
+            return;
+        }
+        
+        submitBtn.innerHTML = '<span class="loading"></span> Updating...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/profile/password', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                submitBtn.innerHTML = '<span class="btn-icon">✅</span> Updated!';
+                this.reset();
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            } else {
+                const error = await response.json();
+                throw new Error(error.detail);
+            }
+        } catch (error) {
+            submitBtn.innerHTML = '<span class="btn-icon">❌</span> Error';
+            alert(error.message || '{{ _("Failed to update password") }}');
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        }
+    });
+}
+
+const emailForm = document.getElementById('email-form');
+
+if(emailForm)
+{
+    emailForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<span class="loading"></span> Sending...';
+        submitBtn.disabled = true;
+        
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch('/api/profile/email', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                submitBtn.innerHTML = '<span class="btn-icon">✅</span> Sent!';
+                this.reset();
+                alert('{{ _("Verification email sent! Please check your new email address.") }}');
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            } else {
+                const error = await response.json();
+                throw new Error(error.detail);
+            }
+        } catch (error) {
+            submitBtn.innerHTML = '<span class="btn-icon">❌</span> Error';
+            alert(error.message || '{{ _("Failed to send verification email") }}');
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        }
+    });
+}
+
+loadStats();
+
+document.documentElement.style.setProperty('--theme-color', '{{ current_user.preferences.accent_color }}');
+
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('verified') === 'true') {
+    alert('{{ _("Email verified successfully!") }}');
+}
+if (urlParams.get('email_changed') === 'true') {
+    alert('{{ _("Email updated successfully!") }}');
+}
+</script>
+{% endblock %}

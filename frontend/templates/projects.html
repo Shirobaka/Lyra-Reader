@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Projects') }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>{{ _('Our Projects') }}
+    </h1>
+    <p>{{ _('Browse all manga series we\'re working on') }}</p>
+</div>
+
+<div class="sorting-controls">
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search manga..." class="search-input">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+            <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2"/>
+        </svg>
+    </div>
+    
+    <div class="sort-controls">
+        <select id="sortBy" class="sort-select">
+            <option value="id">ID</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="status">Status</option>
+            <option value="type">{{ _('Type') }}</option>
+            <option value="recent">{{ _('Recently Added') }}</option>
+        </select>
+        
+        <select id="filterStatus" class="sort-select">
+            <option value="">{{ _('All Status') }}</option>
+            <option value="active">{{ _('Active') }}</option>
+            <option value="on_hold">{{ _('On Hold') }}</option>
+            <option value="finished">{{ _('Finished') }}</option>
+            <option value="cancelled">{{ _('Cancelled') }}</option>
+            <option value="planned">{{ _('Planned') }}</option>
+            <option value="licensed">{{ _('Licensed') }}</option>
+        </select>
+        
+        <select id="filterType" class="sort-select">
+            <option value="">{{ _('All Types') }}</option>
+            <option value="manga">Manga</option>
+            <option value="webtoon">Webtoon</option>
+        </select>
+        
+        <button id="clearFilters" class="btn btn-secondary">{{ _('Clear All') }}</button>
+    </div>
+</div>
+
+<div class="results-info">
+    <span id="resultsCount">{{ manga_list|length }} {{ _('manga found') }}</span>
+</div>
+
+<div class="card-grid" id="mangaGrid">
+    {% for manga in manga_list %}
+    <div class="card manga-card fade-in" 
+         data-name="{{ manga.name|lower }}"
+         data-status="{{ manga.status|lower }}"
+         data-type="{% if 'long_stripe' in manga.reader_mode %}webtoon{% else %}manga{% endif %}"
+         data-index="{{ loop.index0 }}">
+        <img src="{{ manga.cover_path or '/static/images/no-cover.png' }}" 
+             alt="{{ manga.name }}"
+             class="manga-cover"
+             loading="lazy">
+        <div class="manga-info">
+            <input type="hidden" name="id" id="id" value="{{manga.id}}">
+            {% if manga.status == "Licensed" %}
+                <h3>{{ _('[Licensed] ') ~ manga.name }}</h3>
+            {% else %}
+                <h3>{{ manga.name }}</h3>
+            {% endif %}
+            
+            <div style="margin-bottom: 1rem;">
+                <span class="status {{ manga.status.lower()|replace(' ', '_') }}">
+                    {% set status_translations = {
+                        'Active': _('Active'),
+                        'Cancelled': _('Cancelled'),
+                        'Planned': _('Planned'),
+                        'On Hold': _('On Hold'),
+                        'Finished': _('Finished'),
+                        'Licensed': _('Licensed')
+                    } %}
+
+                    {{ status_translations.get(manga.status, manga.status) }}
+                </span>
+                <span style="background-color: #2196f3; font-weight: bold;" class="tag" id="reader_mode">
+                    {% if "long_stripe" in manga.reader_mode %}
+                        Webtoon
+                    {% else %}
+                        Manga
+                    {% endif %}
+                </span>
+            </div>
+            
+            <a href="/project/{{ manga.url_slug }}" class="btn">{{ _('View Details') }}</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="noResults" class="no-results" style="display: none;">
+    <p>{{ _('No manga found matching your criteria.') }}</p>
+    <button onclick="clearAllFilters()" class="btn">{{ _('Clear Filters') }}</button>
+</div>
+
+<!-- Advertisement Space -->
+<!--<div class="ad-banner">
+    <p>Advertisement Space - 728x120</p>
+</div>-->
+{% endblock %}
+
+{% block scripts %}
+<script nonce="{{ csp_nonce() }}">
+class MangaSorter {
+    constructor() {
+        this.mangaCards = Array.from(document.querySelectorAll('.manga-card'));
+        this.mangaGrid = document.getElementById('mangaGrid');
+        this.searchInput = document.getElementById('searchInput');
+        this.sortSelect = document.getElementById('sortBy');
+        this.statusFilter = document.getElementById('filterStatus');
+        this.typeFilter = document.getElementById('filterType');
+        this.clearButton = document.getElementById('clearFilters');
+        this.resultsCount = document.getElementById('resultsCount');
+        this.noResults = document.getElementById('noResults');
+        
+        this.currentSearch = '';
+        this.currentSort = 'id';
+        this.currentStatusFilter = '';
+        this.currentTypeFilter = '';
+        
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.updateResults();
+    }
+    
+    bindEvents() {
+        let searchTimeout;
+        this.searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                this.currentSearch = e.target.value.toLowerCase();
+                this.updateResults();
+            }, 300);
+        });
+        
+        this.sortSelect.addEventListener('change', (e) => {
+            this.currentSort = e.target.value;
+            this.updateResults();
+        });
+        
+        this.statusFilter.addEventListener('change', (e) => {
+            this.currentStatusFilter = e.target.value;
+            this.updateResults();
+        });
+        
+        this.typeFilter.addEventListener('change', (e) => {
+            this.currentTypeFilter = e.target.value;
+            this.updateResults();
+        });
+        
+        this.clearButton.addEventListener('click', () => {
+            this.clearAllFilters();
+        });
+    }
+    
+    clearAllFilters() {
+        this.searchInput.value = '';
+        this.sortSelect.value = 'id';
+        this.statusFilter.value = '';
+        this.typeFilter.value = '';
+        
+        this.currentSearch = '';
+        this.currentSort = 'id';
+        this.currentStatusFilter = '';
+        this.currentTypeFilter = '';
+        
+        this.updateResults();
+    }
+    
+    filterCards() {
+        return this.mangaCards.filter(card => {
+            const name = card.dataset.name;
+            const status = card.dataset.status.replace(" ", "_");
+            const type = card.dataset.type;
+            
+            if (this.currentSearch && !name.includes(this.currentSearch)) {
+                return false;
+            }
+            
+            if (this.currentStatusFilter && status !== this.currentStatusFilter) {
+                return false;
+            }
+            
+            if (this.currentTypeFilter && type !== this.currentTypeFilter) {
+                return false;
+            }
+            
+            return true;
+        });
+    }
+    
+    sortCards(cards) {
+        const sorted = [...cards];
+        
+        switch (this.currentSort) {
+            case 'id':
+                sorted.sort((a, b) => parseInt(a.dataset.index) - parseInt(b.dataset.index));
+                break;
+
+            case 'name-asc':
+                sorted.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name));
+                break;
+                
+            case 'name-desc':
+                sorted.sort((a, b) => b.dataset.name.localeCompare(a.dataset.name));
+                break;
+                
+            case 'status':
+                const statusOrder = ['active', 'on_hold', 'planned', 'finished', 'cancelled', 'licensed'];
+                sorted.sort((a, b) => {
+                    const aIndex = statusOrder.indexOf(a.dataset.status);
+                    const bIndex = statusOrder.indexOf(b.dataset.status);
+                    if (aIndex !== bIndex) {
+                        return aIndex - bIndex;
+                    }
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                });
+                break;
+                
+            case 'type':
+                sorted.sort((a, b) => {
+                    if (a.dataset.type !== b.dataset.type) {
+                        return a.dataset.type.localeCompare(b.dataset.type);
+                    }
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                });
+                break;
+                
+            case 'recent':
+                sorted.sort((a, b) => parseInt(b.dataset.index) - parseInt(a.dataset.index));
+                break;
+        }
+        
+        return sorted;
+    }
+    
+    updateResults() {
+        const filteredCards = this.filterCards();
+        
+        const sortedCards = this.sortCards(filteredCards);
+        
+        this.mangaCards.forEach(card => {
+            card.style.display = 'none';
+            card.classList.remove('fade-in-delayed');
+        });
+        
+        if (sortedCards.length > 0) {
+            this.noResults.style.display = 'none';
+            this.mangaGrid.style.display = 'grid';
+            
+            sortedCards.forEach((card, index) => {
+                card.style.display = 'block';
+                this.mangaGrid.appendChild(card);
+                
+                setTimeout(() => {
+                    card.classList.add('fade-in-delayed');
+                }, index * 50);
+            });
+        } else {
+            this.mangaGrid.style.display = 'none';
+            this.noResults.style.display = 'block';
+        }
+        
+        this.resultsCount.textContent = `${sortedCards.length} manga found`;
+    }
+}
+
+function clearAllFilters() {
+    if (window.mangaSorter) {
+        window.mangaSorter.clearAllFilters();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.mangaSorter = new MangaSorter();
+    
+    const images = document.querySelectorAll('.manga-cover');
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    img.addEventListener('error', () => {
+                        img.src = '/static/images/no-cover.png';
+                        img.classList.add('loaded');
+                    });
+                }
+
+                obs.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '100px'
+    });
+
+    images.forEach(img => {
+        observer.observe(img);
+    });
+});
+</script>
+
+<style>
+/* Sorting Controls Styles */
+.sorting-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.search-container {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-left: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.sort-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.sort-select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.sort-select:hover {
+    border-color: var(--accent-primary);
+}
+
+.results-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.no-results {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.no-results p {
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+/* Animation for filtered results */
+.fade-in-delayed {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s ease;
+}
+
+.manga-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+}
+
+.manga-card.fade-in-delayed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .sorting-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-container {
+        min-width: unset;
+    }
+    
+    .sort-controls {
+        justify-content: center;
+    }
+    
+    .sort-select {
+        min-width: 120px;
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .sort-controls {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .sort-select {
+        width: 100%;
+        min-width: unset;
+    }
+}
+</style>
+{% endblock %}

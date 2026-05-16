@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('Email Verification') }}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .email-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6366f1;
+            margin-bottom: 10px;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-bottom: 30px;
+            color: #4b5563;
+            line-height: 1.7;
+        }
+        .button {
+            display: inline-block;
+            background-color: #6366f1;
+            color: white;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #4f46e5;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #6b7280;
+            text-align: center;
+        }
+        .warning {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .link-text {
+            word-break: break-all;
+            font-family: monospace;
+            background-color: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">📚 {{ site_name }}</div>
+            <h1 class="title">{{ _('Verify Your Email Address') }}</h1>
+        </div>
+
+        <div class="content">
+            <p>{{ _f('Welcome to {site_name}! We\'re excited to have you join our community of manga readers.', site_name=site_name) }}</p>
+
+            <p>{{ _('To complete your registration and start reading, please verify your email address by clicking the button below:') }}</p>
+
+            <div class="button-container">
+                <a href="{{ verification_url }}" class="button">{{ _('Verify Email Address') }}</a>
+            </div>
+
+            <p>{{ _('If the button does not work, you can copy and paste this link into your browser:') }}</p>
+            <div class="link-text">{{ verification_url }}</div>
+
+            <div class="warning">
+                <strong>⏰ {{ _('Important') }}:</strong> {{ _('This verification link will expire in 24 hours. If you do not verify your email within this time, you will need to register again.') }}
+            </div>
+
+            <p>{{ _f('If you did not create an account with {site_name}, you can safely ignore this email.', site_name=site_name) }}</p>
+        </div>
+
+        <div class="footer">
+            <p>{{ _f('This email was sent from {site_name}', site_name=site_name) }}<br>
+            {{ _('If you have any questions, please contact our support team.') }}</p>
+        </div>
+    </div>
+</body>
+</html>

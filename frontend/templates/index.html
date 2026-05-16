@@ -1,0 +1,695 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero fade-in">
+    <h1>
+        {{ _('Welcome to') }}
+        {% if settings.get('site_name') %}
+            {{ settings.get('site_name') }}
+        {% else %}
+            {{ "Manga Scanlations" }}
+        {% endif %}
+    </h1>
+</div>
+
+{% if settings.get('announcement') %}
+<section class="card" style="margin-top: var(--spacing-xl); border-left: 4px solid var(--accent-primary);">
+    <h3 style="color: var(--accent-primary); margin-bottom: var(--spacing-md);">📢 {{ _('Announcement') }}</h3>
+    <div>{{ settings.get('announcement')|safe }}</div>
+</section>
+{% endif %}
+
+<section class="recent-chapters" style="margin-bottom: 50px;">
+    <h2>{{ _('Latest Releases') }} </h2>
+    <div class="slider-container">
+        <button class="slider-btn slider-btn-prev" id="prevBtn" aria-label="Previous">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        
+        <div class="slider-wrapper">
+            <div class="slider-track" id="sliderTrack">
+                {% for chapter in recent_chapters %}
+                <div class="slider-item" data-index="{{ loop.index0 }}">
+                    <div class="card manga-card">
+                        <img src="{{ chapter.manga.cover_path or '/static/images/no-cover.png' }}" 
+                             alt="{{ chapter.manga.name }}" 
+                             class="manga-cover"
+                             loading="lazy">
+                        <div class="manga-info">
+                            <div class="manga-title">
+                                <a style="text-decoration: inherit; color: inherit;" href="/project/{{ chapter.manga.url_slug }}">
+                                    {{ chapter.manga.name|truncate(42, True, '...') }}
+                                </a>
+                            </div>
+                            <p class="chapter-number">{{ _('Chapter') }} {{ "%.15g"|format(chapter.chapter_number) }}</p>
+                            <div class="manga-actions">
+                                <a href="/reader/{{ chapter.id }}" class="btn btn-read">{{ _('Read Now') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <button class="slider-btn slider-btn-next" id="nextBtn" aria-label="Next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+    
+    <div class="slider-dots" id="sliderDots">
+        {% for chapter in recent_chapters[:10] %}
+        <button class="slider-dot" data-index="{{ loop.index0 }}" aria-label="Go to slide {{ loop.index }}"></button>
+        {% endfor %}
+    </div>
+</section>
+
+{% if settings.get('patreon_url') or settings.get('kofi_url') or settings.get('discord_enabled', 'true') == 'true' %}
+<div class="support-container" style="display: flex; gap: var(--spacing-xl); flex-wrap: wrap; align-items: flex-start;">
+    
+    {% if settings.get('patreon_url') or settings.get('kofi_url') %}
+    <div class="support-donations" style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: var(--spacing-lg);">
+        {% if settings.get('patreon_url') %}
+        <section class="patreon-section">
+            <div class="patreon-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="7.846 7.798 47.363 47.34">
+                    <path fill="#FF5900" d="M7.846 30.818c0-11.027 8.96-21.366 20.775-22.843 8.468-.985 14.868 2.265 19.298 6.498 4.135 3.938 6.598 8.96 7.188 14.868.492 5.907-.787 11.027-4.233 15.852-3.446 4.727-10.24 9.945-18.708 9.945h-11.52V32.394c.099-5.022 1.772-9.354 7.877-11.422 5.317-1.575 11.52 1.378 13.391 6.991 1.969 6.006-.887 10.043-4.234 12.505s-8.566 2.462-12.012.099v7.778c2.265 1.083 5.12 1.378 7.188 1.28 7.482-1.084 13.292-5.317 15.754-11.717 2.561-6.794.787-14.671-4.529-19.594-6.4-5.219-13.391-6.499-20.874-2.855-5.218 2.659-8.861 8.074-9.748 13.981v25.699H7.945l-.099-24.321z"/>
+                </svg>
+            </div>
+            <h2>{{ _('Support Us on Patreon') }}</h2>
+            <p style="margin-bottom: var(--spacing-lg);">{{ _('Get early access to chapters and support our translation work!') }}</p>
+            <a href="{{ settings.get('patreon_url') }}" target="_blank" class="btn" style="background-color: #424fff;">
+                {{ _('Support on Patreon') }}
+            </a>
+        </section>
+        {% endif %}
+        
+        {% if settings.get('kofi_url') %}
+        <section class="patreon-section">
+            <div class="patreon-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="0 0 64 64">
+                    <g transform="matrix(1.9656019,0,0,1.9656019,-2.8167172e-7,-51.10565)">
+                        <g transform="translate(0,26)" style="fill:none;fill-rule:nonzero;stroke:none;stroke-width:1">
+                            <circle cx="16.280001" cy="16.280001" r="16.280001" style="fill:#29abe0" />
+                            <path d="m 22.257931,8.8 h 1.607617 C 26.966324,8.8 29.48,11.313676 29.48,14.414452 v 0.330015 c 0,3.100776 -2.513676,5.614452 -5.614452,5.614452 h -1.607617 v 1.689795 c 0,1.431128 -1.160158,2.591286 -2.591286,2.591286 H 7.4312857 C 6.0001581,24.64 4.84,23.479842 4.84,22.048714 V 10.095643 C 4.84,9.3800791 5.4200791,8.8 6.1356429,8.8 Z m 0,2.996757 v 5.565405 h 1.465573 c 1.536844,0 2.782703,-1.245858 2.782703,-2.782702 0,-1.536845 -1.245859,-2.782703 -2.782703,-2.782703 z" style="fill:#ffffff" />
+                        </g>
+                        <g transform="translate(4.84,34.8)" style="fill:#ff5e5b;fill-rule:nonzero;stroke:none;stroke-width:1">
+                            <path d="M 8.36,5.2768458 C 8.7602942,4.1056152 9.7089414,3.52 11.205941,3.52 c 2.2455,0 3.077965,2.7936503 1.900934,4.62 C 12.322188,9.3575665 10.739896,10.897567 8.36,12.76 5.9801039,10.897567 4.3978123,9.3575665 3.613125,8.14 2.4360941,6.3136503 3.2685587,3.52 5.5140587,3.52 7.0110586,3.52 7.9597058,4.1056152 8.36,5.2768458 Z" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <h2>{{ _('Support Us on Ko-fi') }}</h2>
+            <p style="margin-bottom: var(--spacing-lg);">{{ _('Buy us a coffee and help keep the translations coming!') }}</p>
+            <a href="{{ settings.get('kofi_url') }}" target="_blank" class="btn" style="background-color: #424fff;">
+                {{ _('Support on Ko-fi') }}
+            </a>
+        </section>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if settings.get('discord_enabled', 'true') == 'true' %}
+    <section class="discord-widget" style="flex: 1; min-width: 350px;">
+        <h3 style="color: #7289da; margin-bottom: var(--spacing-md);">{{ _('Join Our Discord Community') }}</h3>
+        <p style="margin-bottom: var(--spacing-lg);">{{ _('Chat with other manga fans and get updates on new releases!') }}</p>
+        <div style="text-align: center; padding: var(--spacing-lg); background-color: #7289da; color: white; border-radius: 10px; overflow: hidden;">
+            <iframe 
+                src="https://discord.com/widget?id=404693762481192962&theme=dark" 
+                style="width: 100%; height: 599px; border: none;" 
+                allowtransparency="true" 
+                frameborder="0" 
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+            </iframe>
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script nonce="{{ csp_nonce() }}">
+class ChapterSlider {
+    constructor() {
+        this.currentIndex = 0;
+        this.items = document.querySelectorAll('.slider-item');
+        this.totalItems = this.items.length;
+        this.sliderTrack = document.getElementById('sliderTrack');
+        this.prevBtn = document.getElementById('prevBtn');
+        this.nextBtn = document.getElementById('nextBtn');
+        this.dots = document.querySelectorAll('.slider-dot');
+        
+        this.isAnimating = false;
+        this.autoSlideTimer = null;
+        this.itemsToShow = this.getItemsToShow();
+        
+        // Track the actual logical position (0 to totalItems-1)
+        this.logicalIndex = 0;
+        
+        if (this.totalItems > 0) {
+            this.init();
+        }
+    }
+    
+    getItemsToShow() {
+        const width = window.innerWidth;
+        if (width < 768) return 1;
+        if (width < 1024) return 3;
+        return 5;
+    }
+    
+    isMobile() {
+        return window.innerWidth < 768;
+    }
+    
+    init() {
+        this.createInfiniteLoop();
+        // Start at the first real item (after clones)
+        this.currentIndex = this.totalItems;
+        this.logicalIndex = 0;
+        this.updateSlider(false);
+        this.bindEvents();
+        this.startAutoSlide();
+        
+        const container = document.querySelector('.slider-container');
+        container.addEventListener('mouseenter', () => this.stopAutoSlide());
+        container.addEventListener('mouseleave', () => this.startAutoSlide());
+        
+        window.addEventListener('resize', () => {
+            this.itemsToShow = this.getItemsToShow();
+            this.updateSlider(false);
+        });
+    }
+    
+    createInfiniteLoop() {
+        // Clone the entire set of items before and after the original items
+        const originalItems = Array.from(this.items);
+        
+        // Add items at the end (for going forward)
+        originalItems.forEach(item => {
+            const clone = item.cloneNode(true);
+            clone.classList.add('clone-after');
+            this.sliderTrack.appendChild(clone);
+        });
+        
+        // Add items at the beginning (for going backward)
+        for (let i = originalItems.length - 1; i >= 0; i--) {
+            const clone = originalItems[i].cloneNode(true);
+            clone.classList.add('clone-before');
+            this.sliderTrack.insertBefore(clone, this.sliderTrack.firstChild);
+        }
+        
+        // Update the items list to include all items
+        this.allItems = this.sliderTrack.querySelectorAll('.slider-item');
+    }
+    
+    bindEvents() {
+        this.prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.prevSlide();
+        });
+        
+        this.nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.nextSlide();
+        });
+        
+        this.dots.forEach((dot, index) => {
+            dot.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.goToSlide(index);
+            });
+        });
+        
+        let startX = 0;
+        let endX = 0;
+        
+        this.sliderTrack.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            this.stopAutoSlide();
+        });
+        
+        this.sliderTrack.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        });
+        
+        this.sliderTrack.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    this.nextSlide();
+                } else {
+                    this.prevSlide();
+                }
+            }
+            this.startAutoSlide();
+        });
+    }
+    
+    updateSlider(animate = true) {
+        if (this.isAnimating && animate) return;
+        
+        if (animate) {
+            this.isAnimating = true;
+        }
+
+        this.updateItemClasses();
+        this.moveToPosition(animate);
+        this.updateDots();
+
+        if (animate) {
+            setTimeout(() => {
+                this.checkInfiniteReset();
+                this.isAnimating = false;
+            }, 300);
+        }
+    }
+    
+    moveToPosition(animate = true) {
+        this.sliderTrack.style.transition = animate ? 'transform 0.3s ease' : 'none';
+        
+        if (this.isMobile()) {
+            // On mobile, just center the container (active item will be positioned at 0)
+            this.sliderTrack.style.transform = 'translateX(0)';
+        } else {
+            // Desktop behavior - use the original positioning
+            const containerWidth = this.sliderTrack.parentElement.offsetWidth;
+            const itemWidth = 280;
+            const centerOffset = (containerWidth / 2) - (itemWidth / 2);
+            const offset = centerOffset - (this.currentIndex * itemWidth);
+            this.sliderTrack.style.transform = `translateX(${offset}px)`;
+        }
+    }
+    
+    checkInfiniteReset() {
+        // If we're at the end clones, reset to beginning of real items
+        if (this.currentIndex >= this.totalItems * 2) {
+            this.currentIndex = this.totalItems;
+            this.moveToPosition(false);
+        }
+        // If we're at the beginning clones, reset to end of real items
+        else if (this.currentIndex < this.totalItems) {
+            this.currentIndex = this.totalItems * 2 - 1;
+            this.moveToPosition(false);
+        }
+    }
+    
+    updateItemClasses() {
+        this.allItems.forEach((item, index) => {
+            item.classList.remove('active', 'adjacent');
+            
+            if (this.isMobile()) {
+                // Mobile: Only show the item at the exact current index
+                if (index === this.currentIndex) {
+                    item.classList.add('active');
+                    item.style.display = 'block';
+                    item.style.position = 'relative';
+                    item.style.left = '0';
+                    item.style.transform = 'translateX(0)';
+                } else {
+                    item.style.display = 'none';
+                }
+            } else {
+                // Desktop: Use the original logic
+                // Calculate which logical item this represents
+                let itemLogicalIndex;
+                if (index < this.totalItems) {
+                    // Clone before
+                    itemLogicalIndex = index;
+                } else if (index < this.totalItems * 2) {
+                    // Original items
+                    itemLogicalIndex = index - this.totalItems;
+                } else {
+                    // Clone after
+                    itemLogicalIndex = index - (this.totalItems * 2);
+                }
+                
+                item.style.display = 'block';
+                item.style.position = '';
+                item.style.left = '';
+                item.style.transform = '';
+                
+                if (itemLogicalIndex === this.logicalIndex) {
+                    item.classList.add('active');
+                } else {
+                    const prevIndex = (this.logicalIndex - 1 + this.totalItems) % this.totalItems;
+                    const nextIndex = (this.logicalIndex + 1) % this.totalItems;
+                    
+                    if (itemLogicalIndex === prevIndex || itemLogicalIndex === nextIndex) {
+                        item.classList.add('adjacent');
+                    }
+                }
+            }
+        });
+    }
+    
+    updateDots() {
+        this.dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === this.logicalIndex);
+        });
+    }
+    
+    nextSlide() {
+        this.currentIndex++;
+        this.logicalIndex = (this.logicalIndex + 1) % this.totalItems;
+        this.updateSlider();
+        this.startAutoSlide();
+    }
+    
+    prevSlide() {
+        this.currentIndex--;
+        this.logicalIndex = (this.logicalIndex - 1 + this.totalItems) % this.totalItems;
+        this.updateSlider();
+        this.startAutoSlide();
+    }
+    
+    goToSlide(index) {
+        if (index >= 0 && index < this.totalItems) {
+            this.logicalIndex = index;
+            this.currentIndex = this.totalItems + index; // Jump to the original items section
+            this.updateSlider();
+            this.startAutoSlide();
+        }
+    }
+    
+    startAutoSlide() {
+        this.stopAutoSlide();
+        this.autoSlideTimer = setInterval(() => {
+            this.nextSlide();
+        }, 5000);
+    }
+    
+    stopAutoSlide() {
+        if (this.autoSlideTimer) {
+            clearInterval(this.autoSlideTimer);
+            this.autoSlideTimer = null;
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing slider...');
+    
+    const sliderContainer = document.querySelector('.slider-container');
+    if (sliderContainer) {
+        new ChapterSlider();
+        console.log('Slider initialized');
+    }
+    
+    const images = document.querySelectorAll('.manga-cover');
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    img.addEventListener('error', () => {
+                        img.src = '/static/images/no-cover.png';
+                        img.classList.add('loaded');
+                    });
+                }
+                
+                obs.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '100px'
+    });
+    
+    images.forEach(img => {
+        observer.observe(img);
+    });
+});
+</script>
+
+<style>
+/* Mobile-specific styles */
+@media (max-width: 767px) {
+    .slider-container {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .slider-track {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .slider-item {
+        width: 90vw !important;
+        max-width: 300px !important;
+        margin: 0 auto;
+        flex-shrink: 0;
+    }
+    
+    .slider-item.active {
+        display: block !important;
+    }
+}
+
+/* Slider Styles */
+.slider-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: var(--spacing-lg);
+    padding: 60px 0;
+    height: 650px;    /* Increased from 500px */
+}
+
+.slider-wrapper {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.slider-track {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 40px 0;  /* Increased from 20px 0 */
+}
+
+.slider-item {
+    flex: 0 0 250px;
+    transition: all 0.4s ease;
+    opacity: 0.5;
+    transform: scale(0.85);
+}
+
+.slider-item.active {
+    opacity: 1;
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.slider-item.adjacent {
+    opacity: 0.8;
+    transform: scale(0.95);
+    z-index: 5;
+}
+
+.slider-item .manga-card {
+    height: 450px;  /* Increased from 380px to accommodate taller image area */
+    transition: all 0.4s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.slider-item.active .manga-card {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--accent-primary);
+}
+
+.slider-item .manga-cover {
+    width: 100%;
+    height: 240px;  /* Increased from 200px */
+    object-fit: contain;  /* Changed from 'cover' to 'contain' */
+    background-color: var(--bg-secondary);  /* Add background for empty space */
+}
+
+
+.slider-item .manga-info {
+    padding: var(--spacing-md);
+}
+
+.slider-item .manga-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.3;
+    height: 2.6em;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.slider-item.active .manga-title {
+    font-size: 16px;
+    height: 3em;
+}
+
+.slider-item .chapter-number {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.slider-item.active .chapter-number {
+    font-size: 14px;
+}
+
+.slider-item .manga-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.slider-item .btn {
+    font-size: 12px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    text-align: center;
+    text-decoration: none;
+}
+
+.slider-item.active .btn {
+    font-size: 13px;
+    padding: var(--spacing-sm);
+}
+
+.slider-btn {
+    position: absolute;
+    top: 90%;
+    transform: translateY(-50%);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.slider-btn:hover {
+    background: var(--accent-primary);
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+    border-color: var(--accent-primary);
+}
+
+.slider-btn-prev {
+    left: 20px;
+}
+
+.slider-btn-next {
+    right: 20px;
+}
+
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slider-dot:hover,
+.slider-dot.active {
+    background: var(--accent-primary);
+    transform: scale(1.3);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .support-container {
+        flex-direction: column !important;
+    }
+    
+    .support-donations,
+    .discord-widget {
+        min-width: unset !important;
+        width: 100%;
+    }
+    
+    .discord-widget iframe {
+        height: 300px !important;
+    }
+    
+    .slider-item {
+        flex: 0 0 200px;
+    }
+    
+    .slider-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .slider-btn-prev {
+        left: 10px;
+    }
+    
+    .slider-btn-next {
+        right: 10px;
+    }
+    
+    .slider-track {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .support-donations {
+        gap: var(--spacing-md) !important;
+    }
+    
+    .patreon-section {
+        padding: var(--spacing-md) !important;
+    }
+    
+    .discord-widget iframe {
+        height: 250px !important;
+    }
+    
+    .slider-item {
+        flex: 0 0 180px;
+    }
+    
+    .slider-track {
+        gap: 15px;
+        padding: 15px 0;
+    }
+}
+</style>
+{% endblock %}

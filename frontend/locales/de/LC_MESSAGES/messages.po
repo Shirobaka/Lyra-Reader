@@ -1,0 +1,1106 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-08-15 22:51+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+msgid "Home"
+msgstr "Startseite"
+
+msgid "Projects"
+msgstr "Projekte"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Login"
+msgstr "Einloggen"
+
+msgid "Register"
+msgstr "Registrieren"
+
+msgid "Welcome"
+msgstr "Willkommen"
+
+msgid "Logout"
+msgstr "Ausloggen"
+
+#, python-format
+msgid "Welcome, %(username)s!"
+msgstr "Herzlich Willkommen, %(username)s!"
+
+msgid "Partners"
+msgstr "Partner"
+
+msgid "Links"
+msgstr "Links"
+
+msgid "Imprint"
+msgstr "Impressum"
+
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
+msgid "Download starting..."
+msgstr "Download gestartet..."
+
+msgid "Please login to download chapters"
+msgstr "Du musst eingeloggt sein um Kapitel herunterladen zu können."
+
+msgid "Access denied. Patreon subscription required."
+msgstr "Zugriff verweigert. Patreon Unterstützung benötigt."
+
+msgid "Download started!"
+msgstr "Download gestartet!"
+
+msgid "Welcome to"
+msgstr "Willkommen auf"
+
+msgid "Announcement"
+msgstr "Ankündigung"
+
+msgid "Latest Releases"
+msgstr "Letzte Veröffentlichungen"
+
+msgid "Chapter"
+msgstr "Kapitel"
+
+msgid "Read Now"
+msgstr "Jetzt lesen"
+
+msgid "Support Us on Patreon"
+msgstr "Unterstütze uns auf Patreon"
+
+msgid "Get early access to chapters and support our translation work!"
+msgstr "Erhalte vorzeitigen Zugriff auf Kapitel, unterstütze unsere Arbeit!"
+
+msgid "Support on Patreon"
+msgstr "Über Patreon unterstützen"
+
+msgid "Support Us on Ko-fi"
+msgstr "Unterstütze uns über Ko-fi"
+
+msgid "Buy us a coffee and help keep the translations coming!"
+msgstr "Kauf uns einen Kaffee und unterstütze uns finanziell!"
+
+msgid "Support on Ko-fi"
+msgstr "Über Ko-fi unterstützen"
+
+msgid "Join Our Discord Community"
+msgstr "Trete unserer Discord-Community bei"
+
+msgid "Chat with other manga fans and get updates on new releases!"
+msgstr "Unterhalte dich mit anderen Manga-Fans und erhalte schneller Updates zu neuen Veröffentlichungen."
+
+msgid "Standard User"
+msgstr "Standard-Benutzer"
+
+msgid "Days"
+msgstr "Tage"
+
+msgid "Chapters"
+msgstr "Kapitel"
+
+msgid "Total Chapters Read"
+msgstr "Gesamtanzahl gelesener Kapitel"
+
+msgid "Keep reading!"
+msgstr "Lies weiter!"
+
+msgid "Unique Chapters"
+msgstr "Einzigartige Kapitel"
+
+msgid "Discovering new content"
+msgstr "Neue Inhalte entdeckt"
+
+msgid "Manga Series"
+msgstr "Manga-Serien"
+
+msgid "Exploring different stories"
+msgstr "Erkunde unterschiedliche Geschichten"
+
+msgid "Reader"
+msgstr "Leser"
+
+msgid "Reading Level"
+msgstr "Leser-Stufe"
+
+msgid "Keep going!"
+msgstr "Mach weiter!"
+
+msgid "Your Top Manga"
+msgstr "Dein meist-gelesener Manga"
+
+msgid "The series you read most often"
+msgstr "Die Serie, die du am häufigsten liest"
+
+msgid "Appearance & Theme"
+msgstr "Erscheinungsbild & Theme"
+
+msgid "Customize how the site looks for you"
+msgstr "Passe an, wie die Seite für dich dargestellt wird"
+
+msgid "Accent Color"
+msgstr "Akzent Farbe"
+
+msgid "Theme Mode"
+msgstr "Theme Modus"
+
+msgid "Auto (System)"
+msgstr "Automatisch (System)"
+
+msgid "Light Mode"
+msgstr "Heller Modus"
+
+msgid "Dark Mode"
+msgstr "Dunkler Modus"
+
+msgid "Save Appearance"
+msgstr "Erscheinungsbild speichern"
+
+msgid "Security Settings"
+msgstr "Sicherheits-Einstellungen"
+
+msgid "Manage your account security"
+msgstr "Verwalte deine Account-Sicherheit"
+
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+msgid "Current Password"
+msgstr "Aktuelles Passwort"
+
+msgid "New Password"
+msgstr "Neues Passwort"
+
+msgid "Confirm Password"
+msgstr "Password bestätigen"
+
+msgid "Update Password"
+msgstr "Passwort ändern"
+
+msgid "Change Email Address"
+msgstr "E-Mail Adresse ändern"
+
+msgid "New Email Address"
+msgstr "Neue E-Mail Adresse"
+
+msgid "Confirm with Password"
+msgstr "Mit Passwort bestätigen"
+
+msgid "Send Verification"
+msgstr "Verifizierungslink senden"
+
+msgid "Account Information"
+msgstr "Account-Informationen"
+
+msgid "Your account details and membership info"
+msgstr "Deine Account-Details und Mitglieder-Informationen"
+
+msgid "Username"
+msgstr "Benutzername"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Verified"
+msgstr "Verifiziert"
+
+msgid "Not Verified"
+msgstr "Nicht verifiziert"
+
+msgid "Member Since"
+msgstr "Mitglied seit"
+
+msgid "Account Type"
+msgstr "Account-Typ"
+
+msgid "Administrator"
+msgstr "Administrator"
+
+msgid "Team Member"
+msgstr "Team-Mitglied"
+
+msgid "Patreon Supporter"
+msgstr "Patreon Unterstützer"
+
+msgid "Standard Member"
+msgstr "Normales Mitglied"
+
+msgid "New passwords do not match"
+msgstr "Das neue Passwort stimmt nicht überein"
+
+msgid "Failed to update password"
+msgstr "Passwort konnte nicht geändert werden"
+
+msgid "Verification email sent! Please check your new email address."
+msgstr "Die Verifizierungs-Email wurde versendet! Bitte prüfe dein E-Mail Postfach."
+
+msgid "Failed to send verification email"
+msgstr "Die Verifizierungs-Email konnte nicht versendet werden."
+
+msgid "Email verified successfully!"
+msgstr "E-Mail erfolgreich verifiziert!"
+
+msgid "Email updated successfully!"
+msgstr "E-Mail Adresse erfolgreich geändert!"
+
+msgid "[Licensed] "
+msgstr "[Lizenziert] "
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+msgid "Planned"
+msgstr "Geplant"
+
+msgid "On Hold"
+msgstr "Pausiert"
+
+msgid "Finished"
+msgstr "Abgeschlossen"
+
+msgid "Licensed"
+msgstr "Lizenziert"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "Read Latest"
+msgstr "Neueste Kapitel lesen"
+
+msgid "Total Views"
+msgstr "Aufrufe insgesamt"
+
+msgid "Total Downloads"
+msgstr "Downloads insgesamt"
+
+msgid "Started"
+msgstr "Gestartet am"
+
+msgid "Last Update"
+msgstr "Letztes Update"
+
+msgid "Newest First"
+msgstr "Neueste zuerst"
+
+msgid "All Volumes"
+msgstr "Alle Bänder"
+
+msgid "Volume"
+msgstr "Band"
+
+msgid "No chapters available"
+msgstr "Keine Kapitel verfügbar"
+
+msgid "Check back later for updates!"
+msgstr "Schau später nochmal vorbei!"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Release Date"
+msgstr "Veröffentlichung"
+
+msgid "Views"
+msgstr "Aufrufe"
+
+msgid "Downloads"
+msgstr ""
+
+msgid "Read"
+msgstr "Lesen"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Admin Actions"
+msgstr "Admin Aktionen"
+
+msgid "Edit Manga"
+msgstr "Manga bearbeiten"
+
+msgid "Delete Manga"
+msgstr "Manga löschen"
+
+msgid "Add Chapter"
+msgstr "Kapitel hinzufügen"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid ""
+"Are you sure you want to delete this chapter? This action cannot be "
+"undone."
+msgstr "Bist du dir sicher dass du dieses Kapitel löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden."
+
+msgid "Failed to delete chapter"
+msgstr "Es ist ein Fehler aufgetreten."
+
+msgid "Chapter deleted successfully!"
+msgstr "Löschung des Kapitels erfolgreich!"
+
+msgid ""
+"Are you sure you want to delete this manga? This will also delete all "
+"chapters. This action cannot be undone."
+msgstr "Bist du dir Sicher dass du diesen Manga löschen möchtest? Dies wird auch alle Kapitel löschen. Diese Aktion kann nicht rückgängig gemacht werden."
+
+msgid "Failed to delete manga"
+msgstr "Es ist ein Fehler aufgetreten."
+
+msgid "Manga deleted successfully!"
+msgstr "Löschung des Manga erfolgreich!"
+
+msgid "Our Projects"
+msgstr "Unsere Projekte"
+
+msgid "Browse all manga series we're working on"
+msgstr "Hier findest du alle unsere Projekte"
+
+msgid "Type"
+msgstr "Art"
+
+msgid "Recently Added"
+msgstr "Zuletzt hinzugefügt"
+
+msgid "All Status"
+msgstr "Alle Status"
+
+msgid "All Types"
+msgstr "Alle Arten"
+
+msgid "Clear All"
+msgstr "Filter bereinigen"
+
+msgid "manga found"
+msgstr "Projekte gefunden"
+
+msgid "View Details"
+msgstr "Details ansehen"
+
+msgid "No manga found matching your criteria."
+msgstr "Es wurden keine Projekte mit deinen kriterien gefunden"
+
+msgid "Clear Filters"
+msgstr "Filte bereinigen"
+
+msgid "No pages found for this chapter"
+msgstr "Zu diesem Kapitel wurden keine Seiten gefunden"
+
+msgid "The chapter files may not have been uploaded correctly."
+msgstr "Dieses Kapitel wurde wohl nicht korrekt hochgeladen."
+
+msgid "Back to Series"
+msgstr "Zurück zur Serie"
+
+msgid "← Previous"
+msgstr "← Zurück"
+
+msgid "Next →"
+msgstr "Nächste  →"
+
+msgid "Switch to Single Page"
+msgstr "Zum Einzelseiten-Modus wechseln"
+
+msgid "Switch to Long Strip"
+msgstr "Zum Webtoon-Modus wechseln"
+
+#, python-format
+msgid "← Ch. %(prevChapterNum)s"
+msgstr "← Kapitel %(prevChapterNum)s"
+
+#, python-format
+msgid "Ch. %(nextChapterNum)s →"
+msgstr "Kapitel %(nextChapterNum)s →"
+
+msgid "Admin Dashboard"
+msgstr "Admin Dashboard"
+
+msgid "Admin Panel"
+msgstr "Admin Panel"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "User Management"
+msgstr "Benutzer Management"
+
+msgid "Manga Management"
+msgstr "Manga Management"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "← Back to Site"
+msgstr "← Zurück zur Seite"
+
+#, python-format
+msgid "Welcome back, %(username)s! Here's an overview of your site."
+msgstr "Willkommen zurück, %(username)s! Hier findest du eine Übersicht der Seite."
+
+msgid "Total Manga"
+msgstr "Gesamtzahl Manga"
+
+msgid "Total Chapters"
+msgstr "Gesamtzahl Kapitel"
+
+msgid "Registered Users"
+msgstr "Registrierte Benutzer"
+
+msgid "Quick Actions"
+msgstr "Schnellaktionen"
+
+msgid "Manage Manga"
+msgstr "Mangamanagement"
+
+msgid "Add, edit, or delete manga series"
+msgstr "Manga hinzufügen, bearbeiten oder löschen"
+
+msgid "Upload new chapter content"
+msgstr "Neue Kapitel hochladen"
+
+msgid "Manage Users"
+msgstr "Benutzermanagement"
+
+msgid "User accounts and permissions"
+msgstr "Benutzeraccounts und Berechtigungen"
+
+msgid "Site Settings"
+msgstr "Seiteneinstellungen"
+
+msgid "Configure site preferences"
+msgstr "Konfiguriere Seitenpreferenzen"
+
+msgid "System Information"
+msgstr "System Informationen"
+
+msgid "Server Status"
+msgstr "Server Status"
+
+msgid "Database"
+msgstr "Datenbank"
+
+msgid "Connected"
+msgstr "Verbunden"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "No recent activity found."
+msgstr "Keine kürzliche Aktivität gefunden."
+
+msgid "Failed to load recent activity."
+msgstr "Fehler beim laden der kürzlichen Aktivität."
+
+msgid "Add New Manga"
+msgstr "Neuen Manga hinzufügen"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "URL Slug"
+msgstr "URL-Slug"
+
+msgid "Will be auto-generated from name if left empty"
+msgstr "Wird automatisch generiert wenn nicht ausgefüllt wurde"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+msgid "Public"
+msgstr "Öffentlich"
+
+msgid "Logged In Users"
+msgstr "Eingeloggte Nutzer"
+
+msgid "Patreon Only"
+msgstr "Nur Patreon"
+
+msgid "Reader Mode"
+msgstr "Lese-Modus"
+
+msgid "Single Page"
+msgstr "Einzelseiten"
+
+msgid "Long Strip"
+msgstr "Webtoon"
+
+msgid "Age Rating"
+msgstr "Mindestalter"
+
+msgid "All ages"
+msgstr "Alle ALter"
+
+msgid "Brief description of the manga..."
+msgstr "Kurze Beschreibung über den Manga..."
+
+msgid "Tags (JSON format)"
+msgstr "Tags (JSON Format)"
+
+msgid "Use JSON format: [\"tag1\", \"tag2\", \"tag3\"]"
+msgstr "Benutze JSON Format: [\"tag1\", \"tag2\", \"tag3\"]"
+
+msgid "Cover Image"
+msgstr "Cover-Bild"
+
+msgid "Recommended: 300x400px or similar ratio"
+msgstr "Empfohlen: 300x400px oder ähnliche Auflösung"
+
+msgid "Create Manga"
+msgstr "Manga erstellen"
+
+msgid "Add New Chapter"
+msgstr "Neues Kaptiel hinzufügen"
+
+msgid "Manga"
+msgstr "Manga"
+
+msgid "Select a manga..."
+msgstr "Wähle einen Manga..."
+
+msgid "Chapter Number"
+msgstr "Kapitel-Nummer"
+
+msgid "Volume Number"
+msgstr "Band-Nummer"
+
+msgid "0 = No volume"
+msgstr "0 = Kein Band"
+
+msgid "Optional chapter title"
+msgstr "Kapitelname (Optional)"
+
+msgid "Regular Release Date"
+msgstr "Reguläres Veröfffentlichungsdatum"
+
+msgid "Patreon Release Date"
+msgstr "Patreon Veröffentlichungsdatum"
+
+msgid ""
+"Early access for Patreon users. Automatically sets one week before "
+"regular release if not filled out."
+msgstr "Frühzeitiger Zugang für Patreons. Setzt sich automatisch eine Woche vor regulären veröffentlichungsdatum wenn nicht ausgefüllt."
+
+msgid "Chapter Files"
+msgstr "Kapitel-Dateien"
+
+msgid "Drag and drop files here or click to select"
+msgstr "Drag & Drop dateien hier, oder klicken um auszuwählen"
+
+msgid "Supports ZIP archives and individual images (PNG, JPG, WEBP, GIF)"
+msgstr "Unterstütze Dateiformate: zip, jpg, png, webp, gif"
+
+msgid "Create Chapter"
+msgstr "Kapitel erstellen"
+
+msgid "Existing Manga"
+msgstr "Existierende Manga"
+
+msgid "Actions"
+msgstr "Aktionen"
+
+msgid "View"
+msgstr "Anschauen"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Chapter Management"
+msgstr "Chapter Management"
+
+msgid "Select Manga to Manage Chapters"
+msgstr "Wähle einen Manga um Kapitel zu Managen"
+
+msgid "Select a manga to view its chapters."
+msgstr "Wähle einen Manga um deren Kapitel zu sehen."
+
+msgid "Cover Image (leave empty to keep current)"
+msgstr "Cover-Bild (Keins auswählen um aktuelles zu belassen)"
+
+msgid "Update Manga"
+msgstr "Manga bearbeiten"
+
+msgid "Manga created successfully!"
+msgstr "Manga erfolgreich erstellt!"
+
+msgid "Creating Chapter..."
+msgstr "Erstelle Kapitel..."
+
+msgid "Chapter created successfully!"
+msgstr "Kapitel erfolgreich erstellt!"
+
+msgid "Manga updated successfully!"
+msgstr "Manga erfolgreich bearbeitet!"
+
+msgid ""
+"Are you sure you want to delete this manga? This will also delete all "
+"associated chapters."
+msgstr "Bist du dir Sicher dass du diesen Manga löschen möchtest?"
+
+msgid "Loading chapters..."
+msgstr "Kapitel werden geladen..."
+
+msgid "No chapters found for this manga."
+msgstr "Es wurden keine Kapitel zu diesen Manga gefunden."
+
+msgid "Error loading chapters."
+msgstr "Es ist ein Fehler aufgetreten."
+
+msgid "Remove"
+msgstr "Entfernen"
+
+msgid "Manage user accounts and permissions"
+msgstr "Manage Benutzeraccounts und Benutzerrechte"
+
+msgid "General Settings"
+msgstr "Grundeinstellungen"
+
+msgid "Website Name"
+msgstr "Seiten-Name"
+
+msgid "Patreon URL"
+msgstr "Patreon-Link"
+
+msgid "Ko-fi URL"
+msgstr "Ko-fi Link"
+
+msgid "Discord Widget"
+msgstr "Discord Widget"
+
+msgid "Enabled"
+msgstr "Aktiviert"
+
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+msgid "Allow User Registration"
+msgstr "Benutzer-Registrierung"
+
+msgid "Items Per Page"
+msgstr ""
+
+msgid "Default Theme"
+msgstr "Standard-Theme"
+
+msgid "Dark"
+msgstr "Dunkel"
+
+msgid "Light"
+msgstr "Hell"
+
+msgid "API-Token"
+msgstr "API-Token"
+
+msgid "Token for the discord-bot."
+msgstr "Token für den Discord-Bot."
+
+msgid "Site Description"
+msgstr "Seitenbeschreibung"
+
+msgid "Site Announcement (HTML allowed)"
+msgstr "Seiten-Ankündigung (HTML erlaubt)"
+
+msgid "Save General Settings"
+msgstr "Grundeinstellungen speichern"
+
+msgid "Theme Settings"
+msgstr "Theme Einstellungen"
+
+msgid "Preview"
+msgstr "Vorschau"
+
+msgid "Header Image URL"
+msgstr "Header Bild Link"
+
+msgid "Show Header Image"
+msgstr "Header Bild anzeigen"
+
+msgid "Favicon URL"
+msgstr "Favicon Link"
+
+msgid "Save Theme Settings"
+msgstr "Theme Einstellungen speichern"
+
+msgid "Upload Settings"
+msgstr "Upload Einstellungen"
+
+msgid "Max File Size (MB)"
+msgstr "Max. Dateigröße (MB)"
+
+msgid "Maximum file size for uploads"
+msgstr "Maximale Dateigröße für Uplods"
+
+msgid "Allowed Image Formats"
+msgstr "Erlaubte Bild-Formate"
+
+msgid "Comma-separated list"
+msgstr "Komma-getrennte Liste"
+
+msgid "Image Compression Quality (1-100)"
+msgstr "Bild-Kompressions Qualität (1-100)"
+
+msgid "Higher = better quality, larger files"
+msgstr "Höher = höhere Qualität, höhere Dateigröße"
+
+msgid "Auto Resize Large Images"
+msgstr "Automatische größenanpassung großer Bilder"
+
+msgid "Save Upload Settings"
+msgstr "Upload-Einstellungen speichern"
+
+msgid "Advanced Settings"
+msgstr "Erweiterte Einstellungen"
+
+msgid "Automatic Backups"
+msgstr "Automatische Backups"
+
+msgid "Google Analytics Code"
+msgstr "Google Analytics Code"
+
+msgid "Cache Duration (seconds)"
+msgstr "Cache Dauer (Sekunden)"
+
+msgid "Debug Mode"
+msgstr "Debug Modus"
+
+msgid "Save Advanced Settings"
+msgstr "Erweiterte Einstellungen speichern"
+
+msgid "Email Settings"
+msgstr "E-Mail Einstellungen"
+
+msgid "SMTP Server"
+msgstr ""
+
+msgid "SMTP Port"
+msgstr ""
+
+msgid "SMTP Username"
+msgstr "SMTP: Benutzername"
+
+msgid "SMTP Password"
+msgstr "SMTP: Passwort"
+
+msgid "SMTP use TLS"
+msgstr "SMTP: Benutzt TLS"
+
+msgid "SMTP use SSL"
+msgstr "SMTP: Benutzt SSL"
+
+msgid "SMTP from Email"
+msgstr "SMPT: Von E-Mail"
+
+msgid "SMTP from name"
+msgstr "SMTP: Von Name"
+
+msgid "SMTP base url"
+msgstr "SMTP: Base URL"
+
+msgid "Test (Save before testing)"
+msgstr "Test (Speichern vor dem Testen)"
+
+msgid "Test"
+msgstr ""
+
+msgid "Save Email Settings"
+msgstr "E-Mail Einstellungen speichern"
+
+msgid "Current Settings"
+msgstr "Aktuelle Einstellungen"
+
+msgid "Setting"
+msgstr "Einstellung"
+
+msgid "Value"
+msgstr "Wert"
+
+msgid "Settings saved successfully!"
+msgstr "Einstellungen erfolgreich gespeichert!"
+
+msgid "Setting deleted successfully!"
+msgstr "Einstellung erfolgreich gelöscht!"
+
+msgid "Email-Check failed"
+msgstr "E-Mail Prüfung fehlgeschlagen"
+
+msgid "Email-Check successful!"
+msgstr "E-Mail Prüfung erfolgreich!"
+
+msgid "Manage the websites settings and configurations"
+msgstr "Manage die Webseiten-Einstellungen und Konfigurationen"
+
+msgid "Add New User"
+msgstr "Neuen Benutzer hinzufügen"
+
+msgid "3-50 characters, letters, numbers, and underscores only"
+msgstr "3-50 Zeichen, Buchstaben, Zahlen und Unterstriche erlaubt"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "User Rights"
+msgstr "Benutzer-Rechte"
+
+msgid "Admin Access"
+msgstr "Admin Zugang"
+
+msgid "(Full site access)"
+msgstr "(Vollständiger Seitenzugang)"
+
+msgid "(Member of the scanlation team)"
+msgstr "(Mitglied der Scanlation-Gruppe)"
+
+msgid "Patreon Access"
+msgstr "Patreon Zugang"
+
+msgid "(Early access to chapters)"
+msgstr "(Früherer Zugang zu Kapitel)"
+
+msgid "Chapter Upload"
+msgstr "Kapitel Upload"
+
+msgid "(Can upload chapters)"
+msgstr "(Kann Kapitel hochladen)"
+
+msgid "(Can manage manga)"
+msgstr "(Kann Manga managen)"
+
+msgid "(Can manage users)"
+msgstr "(Kann Benutzer managen)"
+
+msgid "Create User"
+msgstr "Benutzer erstellen"
+
+msgid "Existing Users"
+msgstr "Registrierte Benutzer"
+
+msgid "Search Users"
+msgstr "Benutzer suchen"
+
+msgid "Search by username or email..."
+msgstr "Suche nach Benutzernamen oder E-Mail..."
+
+msgid "Filter by Rights"
+msgstr "Nach Rechte filtern"
+
+msgid "All Rights"
+msgstr "Alle Rechte"
+
+msgid "Patreon"
+msgstr "Patreon"
+
+msgid "Manga Manage"
+msgstr "Manga Management"
+
+msgid "User Manage"
+msgstr "User Management"
+
+msgid "No Special Rights"
+msgstr "Keine weiteren Rechte"
+
+msgid "users found"
+msgstr "Benutzer gefunden"
+
+msgid "User"
+msgstr "Benutzer"
+
+msgid "Rights"
+msgstr "Rechte"
+
+msgid "Created"
+msgstr "Erstellt am"
+
+msgid "No special rights"
+msgstr "Keine erweiterten Rechte"
+
+msgid "Edit User"
+msgstr "Benutzer bearbeiten"
+
+msgid "Leave empty to keep current password"
+msgstr "Feld leer lassen um das Passwort nicht zu ändern"
+
+msgid "Update User"
+msgstr "Benutzer aktualisieren"
+
+msgid "User created successfully!"
+msgstr "Benutzer erfolgreich erstellt!"
+
+msgid "User updated successfully!"
+msgstr "Benutzer erfolgreich aktualisiert!"
+
+msgid "Are you sure you want to delete this user? This action cannot be undone."
+msgstr "Bist du dir Sicher dass du den Benutzer löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden."
+
+#, python-format
+msgid "%(count)s of %(totalUsers)s users found"
+msgstr "%(count)s von %(totalUsers)s Benutzer gefunden"
+
+#, python-format
+msgid "Login to %(site_name)s"
+msgstr "Bei %(site_name)s einloggen"
+
+msgid "Remember me for 90 days"
+msgstr "Für 90 Tage eingeloggt bleiben"
+
+msgid "Don't have an account?"
+msgstr "Du besitzt keinen Account?"
+
+msgid "Register here"
+msgstr "Hier Registrieren"
+
+msgid "Logging in..."
+msgstr "Du wirst eingeloggt..."
+
+msgid "Login failed"
+msgstr "Einloggen fehlgeschlagen"
+
+msgid "Logged in successfully! Session will last 90 days."
+msgstr "Einloggen erfolgreich! Du wirst für 90 Tage nicht ausgeloggt."
+
+msgid "Logged in successfully! Session will last 7 days."
+msgstr "Einloggen erfolgreich! Du wirst für 7 Tage nicht ausgeloggt."
+
+msgid "Login error:"
+msgstr "Einloggen Fehler: "
+
+msgid "Minimum 6 characters"
+msgstr "Mindestens 6 Zeichen"
+
+msgid "Already have an account?"
+msgstr "Du besitzt bereits einen Account?"
+
+msgid "Login here"
+msgstr "Hier einloggen"
+
+msgid "Username can only contain letters, numbers, and underscores"
+msgstr "Der Benutzername kann nur Buchstaben, Zahlen und Unterstriche enthalten."
+
+msgid "Passwords do not match"
+msgstr "Die angegebenen Passwörter stimmen nicht überein"
+
+msgid "Please fix the errors above"
+msgstr "Bitte behebe die oben angegeben Fehler"
+
+msgid "Creating Account..."
+msgstr "Account wird erstellt..."
+
+msgid "Registration failed"
+msgstr "Registrierung fehlgeschlagen"
+
+msgid "Account created successfully! You can now login."
+msgstr "Der Account wurde erfolgreich erstellt! Du kannst dich nun einloggen."
+
+msgid "Email Verification"
+msgstr "E-Mail Verifizierung"
+
+msgid "Verify Your Email Address"
+msgstr "E-Mail Adresse verifizieren"
+
+msgid "Welcome to {site_name}! We're excited to have you join our community of manga readers."
+msgstr "Willkommen bei {site_name}! Wir freuen uns, dich in unserer Manga-Community begrüßen zu dürfen."
+
+msgid "To complete your registration and start reading, please verify your email address by clicking the button below:"
+msgstr "Um deine Registrierung abzuschließen und mit dem Lesen zu beginnen, verifiziere bitte deine E-Mail Adresse über den unten stehenden Button:"
+
+msgid "Verify Email Address"
+msgstr "E-Mail Adresse verifizieren"
+
+msgid "If the button does not work, you can copy and paste this link into your browser:"
+msgstr "Falls der Button nicht funktioniert, kannst du diesen Link in deinen Browser kopieren:"
+
+msgid "Important"
+msgstr "Wichtig"
+
+msgid "This verification link will expire in 24 hours. If you do not verify your email within this time, you will need to register again."
+msgstr "Dieser Verifizierungslink läuft in 24 Stunden ab. Wenn du deine E-Mail nicht innerhalb dieser Zeit verifizierst, musst du dich erneut registrieren."
+
+msgid "If you did not create an account with {site_name}, you can safely ignore this email."
+msgstr "Wenn du keinen Account bei {site_name} erstellt hast, kannst du diese E-Mail ignorieren."
+
+msgid "This email was sent from {site_name}"
+msgstr "Diese E-Mail wurde von {site_name} gesendet"
+
+msgid "If you have any questions, please contact our support team."
+msgstr "Bei Fragen wende dich bitte an unser Support-Team."
+
+msgid "All rights reserved."
+msgstr "Alle Rechte vorbehalten."
+
+msgid "Team"
+msgstr "Team"
+
+msgid "To complete your registration, please verify your email address by visiting this link:"
+msgstr "Um deine Registrierung abzuschließen, besuche bitte folgenden Link:"
+
+msgid "This verification link will expire in 24 hours."
+msgstr "Dieser Verifizierungslink läuft in 24 Stunden ab."
+
+msgid "Email Change Verification"
+msgstr "E-Mail Änderung verifizieren"
+
+msgid "Verify Your New Email"
+msgstr "Neue E-Mail Adresse verifizieren"
+
+msgid "You've requested to change your email address on {site_name}."
+msgstr "Du hast eine Änderung deiner E-Mail Adresse bei {site_name} angefordert."
+
+msgid "To confirm this change, please click the button below:"
+msgstr "Um diese Änderung zu bestätigen, klicke bitte auf den unten stehenden Button:"
+
+msgid "Verify New Email"
+msgstr "Neue E-Mail verifizieren"
+
+msgid "Security Notice"
+msgstr "Sicherheitshinweis"
+
+msgid "This link will expire in 24 hours. If you did not request this change, please ignore this email and contact support."
+msgstr "Dieser Link läuft in 24 Stunden ab. Wenn du diese Änderung nicht angefordert hast, ignoriere diese E-Mail und kontaktiere den Support."
+
+msgid "Email Change Verification - {site_name}"
+msgstr "E-Mail Änderung verifizieren - {site_name}"
+
+msgid "You've requested to change your email address on {site_name}."
+msgstr "Du hast eine Änderung deiner E-Mail Adresse bei {site_name} angefordert."
+
+msgid "To confirm this change, please visit:"
+msgstr "Um diese Änderung zu bestätigen, besuche bitte:"
+
+msgid "This link will expire in 24 hours."
+msgstr "Dieser Link läuft in 24 Stunden ab."
+
+msgid "If you did not request this change, please ignore this email."
+msgstr "Wenn du diese Änderung nicht angefordert hast, ignoriere diese E-Mail."
+
+msgid "Welcome to {site_name}!"
+msgstr "Willkommen bei {site_name}!"
+
+msgid "Verify your email address - {site_name}"
+msgstr "E-Mail Adresse verifizieren - {site_name}"
+
+msgid "Verify your new email address - {site_name}"
+msgstr "Neue E-Mail Adresse verifizieren - {site_name}"
+

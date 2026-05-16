@@ -1,0 +1,656 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Settings') }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<button class="admin-toggle" id="admin-toggle">☰</button>
+
+<div class="admin-layout">
+    <nav class="admin-sidebar" id="admin-sidebar">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+            <h3 style="margin: 0; color: var(--accent-primary);">{{ _('Admin Panel') }}</h3>
+            <button class="admin-close" id="admin-close" style="display: none; background: none; border: none; color: var(--text-primary); font-size: var(--font-lg); cursor: pointer;">✕</button>
+        </div>
+        
+        <ul class="admin-nav">
+            <li><a href="/admin">📊 {{ _('Dashboard') }}</a></li>
+            {% if "Admin" in current_user.rights %}
+            <li><a href="/admin/users">👥 {{ _('User Management') }}</a></li>
+            {% endif %}
+            <li><a href="/admin/manga">📚 {{ _('Manga Management') }}</a></li>
+            {% if "Admin" in current_user.rights %}
+            <li><a href="/admin/settings" class="active">⚙️ {{ _('Settings') }}</a></li>
+            {% endif %}
+        </ul>
+        
+        <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color);">
+            <a href="/" class="btn btn-secondary" style="width: 100%; text-align: center;">{{ _('← Back to Site') }}</a>
+        </div>
+    </nav>
+    
+    <div class="admin-content">
+        <div style="margin-bottom: var(--spacing-xl);">
+            <h1 style="margin-bottom: var(--spacing-sm);">{{ _('User Management') }}</h1>
+            <p style="color: var(--text-secondary);">{{ _('Manage user accounts and permissions') }}</p>
+        </div>
+        
+        <div class="card" style="margin-bottom: var(--spacing-2xl);">
+            <h2 style="margin-bottom: var(--spacing-lg);">{{ _('General Settings') }}</h2>
+            <form id="settings-form">
+                <div class="admin-form-grid">
+                    <div class="form-group">
+                        <label for="site_name" class="form-label">{{ _('Website Name') }}</label>
+                        <input type="text" id="site_name" name="site_name" class="form-input" 
+                               value="{{ settings.get('site_name', 'Manga Scanlations') }}"
+                               placeholder="My Scanlation Group">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patreon_url" class="form-label">{{ _('Patreon URL') }}</label>
+                        <input type="url" id="patreon_url" name="patreon_url" class="form-input" 
+                               value="{{ settings.get('patreon_url', '') }}"
+                               placeholder="https://patreon.com/yourgroup">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kofi_url" class="form-label">{{ _('Ko-fi URL') }}</label>
+                        <input type="url" id="kofi_url" name="kofi_url" class="form-input" 
+                               value="{{ settings.get('kofi_url', '') }}"
+                               placeholder="https://ko-fi.com/yourgroup">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discord_url" class="form-label">{{ _('Discord URL') }}</label>
+                        <input type="url" id="discord_url" name="discord_url" class="form-input" 
+                               value="{{ settings.get('discord_url', '') }}"
+                               placeholder="https://discord.com/invite/yourserver">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discord_enabled" class="form-label">{{ _('Discord Widget') }}</label>
+                        <select id="discord_enabled" name="discord_enabled" class="form-input">
+                            <option value="true" {% if settings.get('discord_enabled', 'true') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('discord_enabled', 'true') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="allow_registration" class="form-label">{{ _('Allow User Registration') }}</label>
+                        <select id="allow_registration" name="allow_registration" class="form-input">
+                            <option value="true" {% if settings.get('allow_registration', 'true') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('allow_registration', 'true') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="items_per_page" class="form-label">{{ _('Items Per Page') }}</label>
+                        <input type="number" id="items_per_page" name="items_per_page" class="form-input" 
+                               value="{{ settings.get('items_per_page', '20') }}" min="5" max="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="default_theme" class="form-label">{{ _('Default Theme') }}</label>
+                        <select id="default_theme" name="default_theme" class="form-input">
+                            <option value="dark" {% if settings.get('default_theme', 'dark') == 'dark' %}selected{% endif %}>{{ _('Dark') }}</option>
+                            <option value="light" {% if settings.get('default_theme', 'dark') == 'light' %}selected{% endif %}>{{ _('Light') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="api_token" class="form-label">{{ _('API-Token') }}</label>
+                        <input type="text" id="api_token" name="api_token" class="form-input" 
+                               value="{{ settings.get('api_token', '') }}">
+                        <small style="color: var(--text-muted); font-size: var(--font-xs);">{{ _('Token for the discord-bot.') }}</small>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="site_description" class="form-label">{{ _('Site Description') }}</label>
+                    <textarea id="site_description" name="site_description" class="form-input form-textarea" rows="3"
+                              placeholder="Brief description of your scanlation group...">{{ settings.get('site_description', '') }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="announcement" class="form-label">{{ _('Site Announcement (HTML allowed)') }}</label>
+                    <textarea id="announcement" name="announcement" class="form-input form-textarea" rows="4"
+                              placeholder="Important announcements will appear on the homepage...">{{ settings.get('announcement', '') }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">{{ _('Save General Settings') }}</button>
+            </form>
+        </div>
+        
+        <div class="card" style="margin-bottom: var(--spacing-2xl);">
+            <h2 style="margin-bottom: var(--spacing-lg);">{{ _('Theme Settings') }}</h2>
+            <form id="theme-settings-form">
+                <div class="admin-form-grid">
+                    <div class="form-group">
+                        <label for="accent_color" class="form-label">{{ _('Accent Color') }}</label>
+                        <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                            <input type="color" id="accent_color" name="accent_color" class="form-input" 
+                                   value="{{ settings.get('accent_color', '#ff6b6b') }}" style="width: 60px;">
+                            <span id="color-preview" style="flex: 1; padding: var(--spacing-sm); border-radius: 5px; background-color: {{ settings.get('accent_color', '#ff6b6b') }}; color: white; text-align: center; font-weight: bold;">{{ _('Preview') }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="header_image" class="form-label">{{ _('Header Image URL') }}</label>
+                        <input type="url" id="header_image" name="header_image" class="form-input" 
+                               value="{{ settings.get('header_image', '') }}" 
+                               placeholder="https://example.com/header.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="show_header_image" class="form-label">{{ _('Show Header Image') }}</label>
+                        <select id="show_header_image" name="show_header_image" class="form-input">
+                            <option value="true" {% if settings.get('show_header_image', 'false') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('show_header_image', 'false') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="favicon_url" class="form-label">{{ _('Favicon URL') }}</label>
+                        <input type="text" id="favicon_url" name="favicon_url" class="form-input" 
+                               value="{{ settings.get('favicon_url', '') }}" 
+                               placeholder="https://example.com/favicon.ico">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">{{ _('Save Theme Settings') }}</button>
+            </form>
+        </div>
+        
+        <div class="card" style="margin-bottom: var(--spacing-2xl);">
+            <h2 style="margin-bottom: var(--spacing-lg);">{{ _('Upload Settings') }}</h2>
+            <form id="upload-settings-form">
+                <div class="admin-form-grid">
+                    <div class="form-group">
+                        <label for="max_file_size" class="form-label">{{ _('Max File Size (MB)') }}</label>
+                        <input type="number" id="max_file_size" name="max_file_size" class="form-input" 
+                               value="{{ settings.get('max_file_size', '50') }}" min="1" max="500">
+                        <small style="color: var(--text-muted); font-size: var(--font-xs);">{{ _('Maximum file size for uploads') }}</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="allowed_formats" class="form-label">{{ _('Allowed Image Formats') }}</label>
+                        <input type="text" id="allowed_formats" name="allowed_formats" class="form-input" 
+                               value="{{ settings.get('allowed_formats', 'png,jpg,jpeg,webp,gif') }}" 
+                               placeholder="png,jpg,jpeg,webp,gif">
+                        <small style="color: var(--text-muted); font-size: var(--font-xs);">{{ _('Comma-separated list') }}</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image_quality" class="form-label">{{ _('Image Compression Quality (1-100)') }}</label>
+                        <input type="number" id="image_quality" name="image_quality" class="form-input" 
+                               value="{{ settings.get('image_quality', '90') }}" min="1" max="100">
+                        <small style="color: var(--text-muted); font-size: var(--font-xs);">{{ _('Higher = better quality, larger files') }}</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="auto_resize" class="form-label">{{ _('Auto Resize Large Images') }}</label>
+                        <select id="auto_resize" name="auto_resize" class="form-input">
+                            <option value="true" {% if settings.get('auto_resize', 'true') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('auto_resize', 'true') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">{{ _('Save Upload Settings') }}</button>
+            </form>
+        </div>
+        
+        <div class="card" style="margin-bottom: var(--spacing-2xl);">
+            <h2 style="margin-bottom: var(--spacing-lg);">{{ _('Advanced Settings') }}</h2>
+            <form id="advanced-settings-form">
+                <div class="admin-form-grid">
+                    <div class="form-group">
+                        <label for="backup_enabled" class="form-label">{{ _('Automatic Backups') }}</label>
+                        <select id="backup_enabled" name="backup_enabled" class="form-input">
+                            <option value="true" {% if settings.get('backup_enabled', 'false') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('backup_enabled', 'false') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="analytics_code" class="form-label">{{ _('Google Analytics Code') }}</label>
+                        <input type="text" id="analytics_code" name="analytics_code" class="form-input" 
+                               value="{{ settings.get('analytics_code', '') }}" 
+                               placeholder="G-XXXXXXXXXX">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cache_duration" class="form-label">{{ _('Cache Duration (seconds)') }}</label>
+                        <input type="number" id="cache_duration" name="cache_duration" class="form-input" 
+                               value="{{ settings.get('cache_duration', '3600') }}" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="debug_mode" class="form-label">{{ _('Debug Mode') }}</label>
+                        <select id="debug_mode" name="debug_mode" class="form-input">
+                            <option value="true" {% if settings.get('debug_mode', 'false') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('debug_mode', 'false') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">{{ _('Save Advanced Settings') }}</button>
+            </form>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--spacing-2xl);">
+            <h2 style="margin-bottom: var(--spacing-lg);">{{ _('Email Settings') }}</h2>
+            <form id="email-settings-form">
+                <div class="admin-form-grid">
+                    <div class="form-group">
+                        <label for="smtp_server" class="form-label">{{ _('SMTP Server') }}</label>
+                        <input type="text" id="smtp_server" name="smtp_server" class="form-input"
+                                value="{{ settings.get('smtp_server', '') }}"
+                                placeholder="smtp.gmail.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smtp_port" class="form-label">{{ _('SMTP Port') }}</label>
+                        <input type="number" id="smtp_port" name="smtp_port" class="form-input" 
+                               value="{{ settings.get('smtp_port', '587') }}" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smtp_username" class="form-label">{{ _('SMTP Username') }}</label>
+                        <input type="text" id="smtp_username" name="smtp_username" class="form-input" 
+                               value="{{ settings.get('smtp_username', '') }}"
+                               placeholder="your-email@gmail.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smtp_password" class="form-label">{{ _('SMTP Password') }}</label>
+                        <input type="text" id="smtp_password" name="smtp_password" class="form-input" 
+                               value="{{ settings.get('smtp_password', '') }}"
+                               placeholder="your-email-password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smtp_use_tls" class="form-label">{{ _('SMTP use TLS') }}</label>
+                        <select id="smtp_use_tls" name="smtp_use_tls" class="form-input">
+                            <option value="true" {% if settings.get('smtp_use_tls', 'false') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('smtp_use_tls', 'false') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smtp_use_ssl" class="form-label">{{ _('SMTP use SSL') }}</label>
+                        <select id="smtp_use_ssl" name="smtp_use_ssl" class="form-input">
+                            <option value="true" {% if settings.get('smtp_use_ssl', 'false') == 'true' %}selected{% endif %}>{{ _('Enabled') }}</option>
+                            <option value="false" {% if settings.get('smtp_use_ssl', 'false') == 'false' %}selected{% endif %}>{{ _('Disabled') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smtp_from_email" class="form-label">{{ _('SMTP from Email') }}</label>
+                        <input type="text" id="smtp_from_email" name="smtp_from_email" class="form-input" 
+                               value="{{ settings.get('smtp_from_email', '') }}"
+                               placeholder="your-email@gmail.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smtp_from_name" class="form-label">{{ _('SMTP from name') }}</label>
+                        <input type="text" id="smtp_from_name" name="smtp_from_name" class="form-input" 
+                               value="{{ settings.get('smtp_from_name', '') }}"
+                               placeholder="Your Manga Site">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="base_url" class="form-label">{{ _('SMTP base url') }}</label>
+                        <input type="text" id="base_url" name="base_url" class="form-input" 
+                               value="{{ settings.get('base_url', '') }}"
+                               placeholder="http://localhost:8000">
+                    </div>
+                    
+                    <div class="form-group" style="display: grid; align-items: center;">
+                        <label for="test_email_settings" class="form-label">{{ _('Test (Save before testing)') }}</label>
+                        <button type="button" id="test_email_settings" name="test_email_settings" class="btn">{{ _('Test') }}</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">{{ _('Save Email Settings') }}</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2 style="margin-bottom: var(--spacing-lg);">{{ _('Current Settings') }}</h2>
+            <div style="margin-bottom: var(--spacing-lg);">
+                <input type="text" id="settings-search" placeholder="Search settings..." class="form-input">
+            </div>
+            <div id="current-settings" class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Setting') }}</th>
+                            <th>{{ _('Value') }}</th>
+                            <th>{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="settings-tbody">
+                        {% for setting in settings_raw %}
+                        <tr data-setting="{{ setting.setting_key.lower() }}">
+                            <td><strong>{{ setting.setting_key }}</strong></td>
+                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                {{ setting.setting_value[:100] }}{% if setting.setting_value|length > 100 %}...{% endif %}
+                            </td>
+                            <td>
+                                <button data-setting-key="{{ setting.setting_key }}" class="btn" style="background-color: var(--error); font-size: var(--font-xs); padding: var(--spacing-xs) var(--spacing-sm);">{{ _('Delete') }}</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="admin-overlay" id="admin-overlay"></div>
+
+<style>
+.admin-layout {
+    display: flex;
+    min-height: calc(100vh - 120px);
+}
+
+.admin-sidebar {
+    width: 250px;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    position: fixed;
+    left: -250px;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    transition: left 0.3s ease;
+    z-index: 1001;
+}
+
+.admin-sidebar.active {
+    left: 0;
+}
+
+.admin-content {
+    flex: 1;
+    padding: var(--spacing-lg);
+    width: 100%;
+    min-height: calc(100vh - 120px);
+}
+
+.admin-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-nav li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.admin-nav a {
+    display: block;
+    padding: var(--spacing-md);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+.admin-nav a.active {
+    background-color: var(--accent-primary);
+    color: white;
+}
+
+.admin-toggle {
+    display: block;
+    position: fixed;
+    top: var(--spacing-lg);
+    left: var(--spacing-lg);
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 1002;
+    font-size: var(--font-lg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.admin-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.admin-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+@media all and (max-width: 1023px) {
+    .admin-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .admin-close {
+        display: block !important;
+    }
+    
+    .admin-content {
+        padding: var(--spacing-md);
+    }
+    
+    .admin-toggle {
+        top: var(--spacing-md);
+        left: var(--spacing-md);
+    }
+}
+
+@media (min-width: 992px) {
+    .admin-sidebar {
+        position: static;
+        left: 0;
+    }
+    
+    .admin-content {
+        margin-left: 0;
+        padding: var(--spacing-2xl);
+    }
+    
+    .admin-toggle {
+        display: none;
+    }
+    
+    .admin-overlay {
+        display: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script nonce="{{ csp_nonce() }}">
+function toggleAdminSidebar() {
+    const sidebar = document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('admin-overlay');
+    
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+document.getElementById('admin-toggle').addEventListener('click', toggleAdminSidebar);
+document.getElementById('admin-close').addEventListener('click', toggleAdminSidebar);
+document.getElementById('admin-overlay').addEventListener('click', toggleAdminSidebar);
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 992) {
+        const sidebar = document.getElementById('admin-sidebar');
+        const overlay = document.getElementById('admin-overlay');
+        
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const forms = [
+        'settings-form',
+        'upload-settings-form',
+        'theme-settings-form',
+        'advanced-settings-form',
+        'email-settings-form'
+    ];
+    
+    forms.forEach(formId => {
+        const form = document.getElementById(formId);
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await saveSettings(formId);
+            });
+        }
+    });
+    
+    const colorPicker = document.getElementById('accent_color');
+    const colorPreview = document.getElementById('color-preview');
+    
+    colorPicker?.addEventListener('input', (e) => {
+        colorPreview.style.backgroundColor = e.target.value;
+        document.documentElement.style.setProperty('--theme-color', e.target.value);
+    });
+
+    document.getElementById('test_email_settings').addEventListener('click', checkEmailSettings);
+    document.getElementById('settings-search').addEventListener('keyup', filterSettings);
+
+    document.getElementById('settings-tbody').addEventListener('click', function(e) {
+        const btn = e.target.closest('button[data-setting-key]');
+        if (!btn) return;
+        deleteSetting(btn.dataset.settingKey);
+    });
+});
+
+async function saveSettings(formId) {
+    const form = document.getElementById(formId);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+        submitBtn.style.opacity = '0.7';
+        
+        const formData = new FormData(form);
+        const settings = {};
+        
+        for (let [key, value] of formData.entries()) {
+            settings[key] = value;
+        }
+        
+        const response = await fetch('/api/settings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(settings)
+        });
+        
+        if (!response.ok) throw new Error('Failed to save settings');
+        
+        showNotification('{{ _("Settings saved successfully!") }}');
+        
+        if (formId === 'theme-settings-form') {
+            setTimeout(() => location.reload(), 1000);
+        }
+        
+    } catch (error) {
+        showNotification(error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        submitBtn.style.opacity = '1';
+    }
+}
+
+async function deleteSetting(settingKey) {
+    if (!confirm(`Are you sure you want to delete the setting "${settingKey}"?`)) return;
+    
+    try {
+        const response = await fetch(`/api/settings/${settingKey}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        
+        if (!response.ok) throw new Error('Failed to delete setting');
+        
+        showNotification('{{ _("Setting deleted successfully!") }}');
+        setTimeout(() => location.reload(), 1000);
+    } catch (error) {
+        showNotification(error.message, 'error');
+    }
+}
+
+function filterSettings() {
+    const searchTerm = document.getElementById('settings-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#settings-tbody tr');
+    
+    rows.forEach(row => {
+        const settingName = row.dataset.setting;
+        if (settingName.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+async function checkEmailSettings()
+{
+    try {
+        const response = await fetch(`/api/test-email`, {
+            method: 'GET'
+        });
+
+        if(!response.ok) return showNotification("{{ _('Email-Check failed') }}");
+
+        showNotification('{{ _("Email-Check successful!") }}');
+    } catch (error)
+    {
+        showNotification(error.message, 'error');
+    }
+}
+</script>
+{% endblock %}
