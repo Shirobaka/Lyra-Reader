@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form, Request, Response
+from typing import Optional
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -786,7 +787,7 @@ async def register(
     username: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
-    recaptcha_token: str = Form(...),
+    recaptcha_token: Optional[str] = Form(None),
     db: Session = Depends(get_db)
 ):
     if os.getenv("RECAPTCHA_ENABLED", "False") == "True" and os.getenv("RECAPTCHA_SITE_KEY", "your_recaptcha_site_key_here") != "your_recaptcha_site_key_here" and not verify_recaptcha(recaptcha_token):
