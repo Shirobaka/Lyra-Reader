@@ -122,7 +122,7 @@ async def set_csp_nonce(request: Request, call_next):
     request.state.csp_nonce = nonce  # kept for backward compatibility
     return await call_next(request)
 
-if os.getenv("SECURITY_HEADERS_ENABLED", "False") == "True":
+if os.getenv("SECURITY_HEADERS_ENABLED", "True") == "True":
     app.add_middleware(SecurityHeadersMiddleware)
 
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
@@ -424,7 +424,7 @@ async def register_page(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(request, "auth/register.html", {
         "current_user": current_user,
         "RECAPTCHA_SITE_KEY": os.getenv("RECAPTCHA_SITE_KEY"),
-        "RECAPTCHA_ENABLED": os.getenv("RECAPTCHA_ENABLED"),
+        "RECAPTCHA_ENABLED": os.getenv("RECAPTCHA_ENABLED", "False"),
         "settings": settings,
     })
 
