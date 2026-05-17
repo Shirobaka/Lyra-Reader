@@ -135,7 +135,7 @@ Copy `.env.example` to `.env` and fill in the values.
 
 | Variable | Default | Description |
 |---|---|---|
-| `ENVIRONMENT` | `production` | `production` or `development` |
+| `ENVIRONMENT` | `development` | `production` or `development` |
 | `DEBUG_MODE` | `False` | Enables `/admin/docs` and `/admin/redoc` when `True` |
 | `APP_LANGUAGE` | `de` | UI language (`de` or `en`) |
 | `SECRET_KEY` | — | **Required.** Secret for JWT signing. Generate with `openssl rand -hex 32` |
