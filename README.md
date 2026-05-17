@@ -279,33 +279,6 @@ Use the **Test Email** button in Admin → Settings to verify your configuration
 └── .env.example
 ```
 
----
-
-## Building and Publishing the Docker Image
-
-```bash
-# Build
-docker build -t ghcr.io/shirobaka/lyra-reader:latest .
-
-# Push to GitHub Container Registry
-docker login ghcr.io
-docker push ghcr.io/shirobaka/lyra-reader:latest
-```
-
-Then update the `image:` line in `docker-compose.yml` with your image name.
-
----
-
-## Reverse Proxy (Apache)
-
-An example Apache virtual host configuration is included in `apache settings.txt`. Key points:
-
-- Proxy all requests to `http://localhost:8000`
-- Security headers are set at the Apache level (can be disabled in the app by setting `SECURITY_HEADERS_ENABLED=False`)
-- Use Certbot / Let's Encrypt for HTTPS
-
----
-
 ## License
 
-This project is provided as-is. Replace this section with your chosen license.
+This project is licensed under the [MIT License](LICENSE).
