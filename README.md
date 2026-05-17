@@ -177,7 +177,6 @@ Roles are stored as a JSON array on the user record. Multiple roles can be assig
 | `Admin` | Full access to all admin pages and APIs |
 | `Manga Manage` | Create, edit, delete manga and chapters |
 | `Chapter Upload` | Upload chapters |
-| `Chapter Manage` | Manage chapters |
 | `User Manage` | View and edit other users |
 | `Team Member` | Team badge on profile |
 | `Patreon` | Access to Patreon early-release chapters |

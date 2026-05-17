@@ -214,7 +214,7 @@ async def homepage(request: Request, db: Session = Depends(get_db)):
             Chapter.release_date_regular <= datetime.now(),
             Manga.hidden_status.like("All"),
         ).order_by(desc(Chapter.release_date_regular)).limit(10).all()
-    elif user_has_rights(request, db, "Manga Manage") or user_has_rights(request, db, "Chapter Manage"):
+    elif user_has_rights(request, db, "Manga Manage") or user_has_rights(request, db, "Chapter Upload"):
         recent_chapters = db.query(Chapter).join(Manga).filter(
             Chapter.release_date_regular <= datetime.now(),
             or_(Manga.hidden_status.like("All"),
@@ -464,7 +464,7 @@ async def admin_manga(request: Request, db: Session = Depends(get_db)):
     
     if not (user_has_rights(request, db, "Admin") or
             user_has_rights(request, db, "Manga Manage") or
-            user_has_rights(request, db, "Chapter Manage")):
+            user_has_rights(request, db, "Chapter Upload")):
         raise HTTPException(status_code=403, detail="Insufficient permissions")
 
     settings = get_settings(db)    
