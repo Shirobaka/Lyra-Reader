@@ -1377,7 +1377,7 @@ def imprint(request: Request, db: Session = Depends(get_db)):
 @app.get("/api/test-email")
 def test_email(request: Request, db: Session = Depends(get_db)):
     current_user = require_admin(request, db)
-    site_name = get_setting(db, 'site_name', 'Manga Site')
+    site_name = get_setting(db, 'site_name', 'Lyra Reader')
     subject = f"Test Email from {site_name}"
     html_body = f"<p>This is a test email from <strong>{site_name}</strong>. Your email configuration is working correctly.</p>"
     text_body = f"This is a test email from {site_name}. Your email configuration is working correctly."
@@ -1430,7 +1430,7 @@ def get_smtp_settings(db: Session):
                 'smtp_use_tls': True,
                 'smtp_use_ssl': False,
                 'smtp_from_email': 'noreply@localhost',
-                'smtp_from_name': 'Manga Site'
+                'smtp_from_name': 'Lyra Reader'
             }
             settings[key] = defaults.get(key, '')
     
@@ -1498,7 +1498,7 @@ def send_email_smtp(to_email: str, subject: str, html_body: str, text_body: str,
         return False
 
 def send_verification_email(email: str, token: str, db: Session):
-    site_name = get_setting(db, 'site_name', 'Manga Site')
+    site_name = get_setting(db, 'site_name', 'Lyra Reader')
     base_url = get_setting(db, 'base_url', 'http://localhost:8000')
 
     verification_url = f"{base_url}/verify-email?token={token}"
@@ -1511,7 +1511,7 @@ def send_verification_email(email: str, token: str, db: Session):
     return send_email_smtp(email, subject, html_body, text_body, db)
 
 def send_email_change_verification(email: str, token: str, db: Session):
-    site_name = get_setting(db, 'site_name', 'Manga Site')
+    site_name = get_setting(db, 'site_name', 'Lyra Reader')
     base_url = get_setting(db, 'base_url', 'http://localhost:8000')
 
     verification_url = f"{base_url}/verify-email-change?token={token}"
